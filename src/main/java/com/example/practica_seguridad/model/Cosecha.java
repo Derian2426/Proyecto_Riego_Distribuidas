@@ -1,70 +1,31 @@
 package com.example.practica_seguridad.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
+import lombok.Data;
+import java.util.Date;
 
 @Entity
-@Table(name = "cosecha")
+@Table(name = "Cosecha")
+@Data
 public class Cosecha {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "idCosecha")
+    private Long idCosecha;
+    @Column(name = "nombre")
     private String nombre;
+    @Column(name = "tipoCultivo")
     private String tipoCultivo;
-    private LocalDateTime fechaSiembra;
-    private LocalDateTime fechaCosecha;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Column(name = "fechaSiembra")
+    private Date fechaSiembra;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Column(name = "fechaCosecha")
+    private Date fechaCosecha;
+    @Column(name = "rendimiento")
     private double rendimiento;
     @ManyToOne
+    @JoinColumn(name = "idZona")
     private ZonaRiego zonaRiego;
-//getters y setters
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getTipoCultivo() {
-        return tipoCultivo;
-    }
-
-    public void setTipoCultivo(String tipoCultivo) {
-        this.tipoCultivo = tipoCultivo;
-    }
-
-    public LocalDateTime getFechaSiembra() {
-        return fechaSiembra;
-    }
-
-    public void setFechaSiembra(LocalDateTime fechaSiembra) {
-        this.fechaSiembra = fechaSiembra;
-    }
-
-    public LocalDateTime getFechaCosecha() {
-        return fechaCosecha;
-    }
-
-    public void setFechaCosecha(LocalDateTime fechaCosecha) {
-        this.fechaCosecha = fechaCosecha;
-    }
-
-    public double getRendimiento() {
-        return rendimiento;
-    }
-
-    public void setRendimiento(double rendimiento) {
-        this.rendimiento = rendimiento;
-    }
 }

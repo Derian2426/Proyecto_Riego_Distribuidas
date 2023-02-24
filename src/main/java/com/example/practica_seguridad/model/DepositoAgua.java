@@ -6,24 +6,24 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
-@Table(name = "datosMeteorologicos")
+@Table(name = "depositoAgua")
 @Data
-public class DatosMeteorologicos {
+public class DepositoAgua {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idDatosM")
-    private Long idDatosM;
+    @Column(name = "idDeposito")
+    private Long idDeposito;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "fecha")
     private Date fecha;
-    @Column(name = "temperatura")
-    private double temperatura;
-    @Column(name = "humedad")
-    private double humedad;
-    @Column(name = "precipitacion")
-    private double precipitacion;
-    @Column(name = "viento")
-    private double viento;
+    @Column(name = "nivelAgua")
+    private double nivelAgua;
+    @Column(name = "descripcion")
+    private String descripcion;
+    @ManyToOne
+    @JoinColumn(name = "idZona")
+    private ZonaRiego zonaRiego;
 }

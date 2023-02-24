@@ -1,50 +1,23 @@
 package com.example.practica_seguridad.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "restriccionAcceso")
 public class RestriccionAcceso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "idRestriccion")
+    private Long idRestriccion;
+    @Column(name = "nombreModulo")
     private String nombreModulo;
+    @Column(name = "tipoUsuario")
     private String tipoUsuario;
+    @Column(name = "acceso")
     private boolean acceso;
     @ManyToOne
     @JoinColumn(name = "idUsuario")
     private Usuario usuario;
-//getters y setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombreModulo() {
-        return nombreModulo;
-    }
-
-    public void setNombreModulo(String nombreModulo) {
-        this.nombreModulo = nombreModulo;
-    }
-
-    public String getTipoUsuario() {
-        return tipoUsuario;
-    }
-
-    public void setTipoUsuario(String tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
-    }
-
-    public boolean isAcceso() {
-        return acceso;
-    }
-
-    public void setAcceso(boolean acceso) {
-        this.acceso = acceso;
-    }
 }

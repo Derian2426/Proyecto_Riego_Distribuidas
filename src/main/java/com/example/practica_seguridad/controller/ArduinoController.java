@@ -1,6 +1,6 @@
 package com.example.practica_seguridad.controller;
 
-import com.example.practica_seguridad.model.DatosSensor;
+import com.example.practica_seguridad.model.SistemaRiego;
 import com.example.practica_seguridad.security.TokenUtils;
 import com.example.practica_seguridad.service.ArduinoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +13,17 @@ public class ArduinoController {
     @Autowired
     private ArduinoService arduinoService;
     @PostMapping
-    public String verificarSensor(@RequestBody DatosSensor sensor){
-        if(arduinoService.findByName(sensor.getTipoSensor())!=null){
-            return TokenUtils.createToken(sensor.getTipoSensor(),String.valueOf(sensor.getLectura()));
+    public String verificarSistema(@RequestBody SistemaRiego sistemaRiego){
+        if(arduinoService.findByName(sistemaRiego.getNombre())!=null){
+            return TokenUtils.createToken(sistemaRiego.getNombre(),String.valueOf(sistemaRiego.getTipo()));
         }else{
             return "No se logro verificar el sensor";
         }
     }
-    @PostMapping("/datoSensor")
-    public void recibeDatoSensor(@RequestBody DatosSensor sensor){
-        if (sensor!=null)
-            arduinoService.create(sensor);
+    @PostMapping("/registroSistema")
+    public void registrarSistema(@RequestBody SistemaRiego sistemaRiego){
+        if (sistemaRiego!=null)
+            arduinoService.create(sistemaRiego);
         else
             System.out.println("Ocurrio un error");
     }

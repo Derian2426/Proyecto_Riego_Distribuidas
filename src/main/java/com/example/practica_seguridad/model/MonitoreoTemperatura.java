@@ -1,50 +1,28 @@
 package com.example.practica_seguridad.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Date;
+
 @Entity
 @Table(name = "monitoreoTemperatura")
+@Data
 public class MonitoreoTemperatura {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private LocalDateTime fecha;
+    @Column(name = "idTemperatura")
+    private Long idTemperatura;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Column(name = "fechaMedicion", nullable = false)
+    private Date fechaMedicion;
+    @Column(name = "temperatura")
     private double temperatura;
+    @Column(name = "humedad")
     private double humedad;
     @ManyToOne
+    @JoinColumn(name = "idZona")
     private ZonaRiego zonaRiego;
-//getters y setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
-
-    public double getTemperatura() {
-        return temperatura;
-    }
-
-    public void setTemperatura(double temperatura) {
-        this.temperatura = temperatura;
-    }
-
-    public double getHumedad() {
-        return humedad;
-    }
-
-    public void setHumedad(double humedad) {
-        this.humedad = humedad;
-    }
 }

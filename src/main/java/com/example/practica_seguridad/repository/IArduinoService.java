@@ -1,8 +1,16 @@
 package com.example.practica_seguridad.repository;
 
-import com.example.practica_seguridad.model.DatosSensor;
+import com.example.practica_seguridad.model.SistemaRiego;
+import com.example.practica_seguridad.model.Usuario;
+
+import java.util.List;
 
 public interface IArduinoService {
-    DatosSensor findByName(String name);
-    DatosSensor create(DatosSensor datosSensor);
+    SistemaRiego findByName(String name);
+    SistemaRiego create(SistemaRiego datosSensor);
+    SistemaRiego update(SistemaRiego usuario);
+    SistemaRiego findById(Integer idSistema);
+    List<SistemaRiego> findAll();
+    List<SistemaRiego> findByUsuario(Usuario usuario);
+    void delete(Integer idUsuario);
 }

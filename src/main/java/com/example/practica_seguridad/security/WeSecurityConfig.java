@@ -26,7 +26,7 @@ public class WeSecurityConfig {
         jwtAuthenticationFilter.setFilterProcessesUrl("/login");
         return httpSecurity.csrf().disable()
                 .authorizeRequests().requestMatchers(HttpMethod.POST,"/autorizacion").permitAll()
-                .requestMatchers(HttpMethod.POST,"/usuarios").permitAll()
+                .requestMatchers(HttpMethod.POST,"/registroSistema").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

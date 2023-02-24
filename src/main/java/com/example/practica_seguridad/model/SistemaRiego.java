@@ -1,69 +1,35 @@
 package com.example.practica_seguridad.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Date;
+
 @Entity
+@Data
 @Table(name = "sistemaRiego")
 public class SistemaRiego {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "idSistema")
+    private Long idSistema;
+    @Column(name = "nombre")
     private String nombre;
+    @Column(name = "tipo")
     private String tipo;
-    private LocalDateTime fechaInstalacion;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Column(name = "fechaInstalacion")
+    private Date fechaInstalacion;
+    @Column(name = "modoRiego")
     private String modoRiego;
+    @Column(name = "configuracionRiego")
     private String configuracionRiego;
+    @Column(name = "descripcion")
+    private String descripcion;
 
-    @OneToOne(mappedBy = "sistemaRiego")
-    private ZonaRiego zonaRiego;
-    //getters y setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public LocalDateTime getFechaInstalacion() {
-        return fechaInstalacion;
-    }
-
-    public void setFechaInstalacion(LocalDateTime fechaInstalacion) {
-        this.fechaInstalacion = fechaInstalacion;
-    }
-
-    public String getModoRiego() {
-        return modoRiego;
-    }
-
-    public void setModoRiego(String modoRiego) {
-        this.modoRiego = modoRiego;
-    }
-
-    public String getConfiguracionRiego() {
-        return configuracionRiego;
-    }
-
-    public void setConfiguracionRiego(String configuracionRiego) {
-        this.configuracionRiego = configuracionRiego;
-    }
+    @ManyToOne
+    @JoinColumn(name = "idUsuario")
+    private Usuario usuario;
 }
