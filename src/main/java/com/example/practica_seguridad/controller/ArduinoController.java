@@ -4,10 +4,7 @@ import com.example.practica_seguridad.model.DatosSensor;
 import com.example.practica_seguridad.security.TokenUtils;
 import com.example.practica_seguridad.service.ArduinoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/autorizacion")
@@ -30,4 +27,5 @@ public class ArduinoController {
         else
             System.out.println("Ocurrio un error");
     }
+
 }

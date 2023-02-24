@@ -1,8 +1,6 @@
 package com.example.practica_seguridad.security;
 
-import com.example.practica_seguridad.PracticaSeguridadApplication;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

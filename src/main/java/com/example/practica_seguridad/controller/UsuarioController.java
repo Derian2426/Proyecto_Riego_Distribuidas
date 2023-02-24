@@ -25,7 +25,11 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<Usuario> createUser(@RequestBody Usuario usuario){
         usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
-        return new ResponseEntity<>(usuarioService.create(usuario), HttpStatus.CREATED);
+        Usuario user =usuarioService.findByEmail(usuario.getEmail());
+        if (user.getEmail()==null)
+            return new ResponseEntity<>(usuarioService.create(usuario), HttpStatus.CREATED);
+        else
+            return new ResponseEntity<>(new Usuario(), HttpStatus.NOT_IMPLEMENTED);
     }
     @PutMapping
     public  ResponseEntity<Usuario> updateUser(@RequestBody Usuario usuario){

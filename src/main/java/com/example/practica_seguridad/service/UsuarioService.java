@@ -3,7 +3,9 @@ package com.example.practica_seguridad.service;
 import com.example.practica_seguridad.model.Usuario;
 import com.example.practica_seguridad.repository.IUsuarioService;
 import com.example.practica_seguridad.repository.UserRepository;
+import com.example.practica_seguridad.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,4 +42,13 @@ public class UsuarioService implements IUsuarioService {
         usuarioRepository.deleteById(idUsuario);
     }
 
+    @Override
+    public Usuario findByEmail(String email){
+        try {
+            return usuarioRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("No se pudo encontrar un usuario con el email: " + email));
+        }catch (Exception e){
+            return new Usuario();
+        }
+    }
 }

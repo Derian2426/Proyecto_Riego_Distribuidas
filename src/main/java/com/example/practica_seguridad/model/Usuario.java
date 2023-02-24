@@ -1,5 +1,6 @@
 package com.example.practica_seguridad.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class Usuario {
     private String email;
     @Column(name = "fechaNacimiento", nullable = false)
     private Date fechaNacimiento;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "password", nullable = false)
     private String password;
 }

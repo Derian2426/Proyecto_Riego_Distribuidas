@@ -9,6 +9,8 @@ public class PracticaSeguridadApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PracticaSeguridadApplication.class, args);
+		//System.out.println(new BCryptPasswordEncoder().encode("123"));
+
 	}
 
 }
