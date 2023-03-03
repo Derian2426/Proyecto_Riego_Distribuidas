@@ -1,7 +1,6 @@
 package com.example.practica_seguridad.repository;
 
 import com.example.practica_seguridad.model.DepositoAgua;
-import com.example.practica_seguridad.model.Sensor;
 
 import java.util.List;
 
