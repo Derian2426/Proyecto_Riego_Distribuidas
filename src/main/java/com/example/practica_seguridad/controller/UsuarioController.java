@@ -29,7 +29,7 @@ public class UsuarioController {
         if (user.getEmail()==null)
             return new ResponseEntity<>(usuarioService.create(usuario), HttpStatus.CREATED);
         else
-            return new ResponseEntity<>(new Usuario(), HttpStatus.NOT_IMPLEMENTED);
+            return new ResponseEntity<>(new Usuario(), HttpStatus.CONFLICT);
     }
     @PutMapping
     public  ResponseEntity<Usuario> updateUser(@RequestBody Usuario usuario){
@@ -49,5 +49,9 @@ public class UsuarioController {
             throw new ModelNotFoundException("El usuario que pretende eliminar no existe!!!");
         usuarioService.delete(idUsuario);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("/busquedaUsuario")
+    public  ResponseEntity<Usuario> busquedaUser(@RequestBody Usuario usuario){
+        return new ResponseEntity<>(usuarioService.findByEmail(usuario.getEmail()), HttpStatus.OK);
     }
 }

@@ -46,7 +46,7 @@ public class ArduinoService implements IArduinoService {
     @Override
     public List<SistemaRiego> findByUsuario(Usuario usuario) {
         try {
-            return arduinoRepository.findByUsuario(usuario.getId())
+            return arduinoRepository.findByUsuario(usuario)
                     .orElseThrow(() -> new IllegalArgumentException("Does not have a watering system installed."));
         }catch (Exception e){
              return new ArrayList<>();

@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface ArduinoRepository extends JpaRepository<SistemaRiego,Integer> {
     Optional<SistemaRiego> findOneByNombre(String nombre);
-    Optional<List<SistemaRiego>> findByUsuario(Integer usuario);
+    Optional<List<SistemaRiego>> findByUsuario(Usuario usuario);
 }

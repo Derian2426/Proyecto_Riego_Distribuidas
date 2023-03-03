@@ -22,7 +22,7 @@ public class ZonaRiego {
     @Column(name = "tipoRiego")
     private String tipoRiego;
     @ManyToOne
-    @JoinColumn(name = "idSensor")
+    @JoinColumn(name = "idSistema")
     private SistemaRiego sistemaRiego;
 
 }
