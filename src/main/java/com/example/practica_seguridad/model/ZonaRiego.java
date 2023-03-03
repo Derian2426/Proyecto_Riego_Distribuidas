@@ -21,6 +21,12 @@ public class ZonaRiego {
     private String tipoCultivo;
     @Column(name = "tipoRiego")
     private String tipoRiego;
+    @Column(name = "ultimaTemaperatura")
+    private Float ultimaTemaperatura;
+    @Column(name = "ultimaHumedadAmbiente")
+    private Float ultimaHumedadAmbiente;
+    @Column(name = "ultimaHumedadSuelo")
+    private Float ultimaHumedadSuelo;
     @ManyToOne
     @JoinColumn(name = "idSistema")
     private SistemaRiego sistemaRiego;
