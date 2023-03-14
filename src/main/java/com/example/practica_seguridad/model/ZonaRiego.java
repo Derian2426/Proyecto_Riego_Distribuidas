@@ -27,6 +27,14 @@ public class ZonaRiego {
     private Float ultimaHumedadAmbiente;
     @Column(name = "ultimaHumedadSuelo")
     private Float ultimaHumedadSuelo;
+    @Column(name = "ultimanitrogeno")
+    private double ultimaNitrogeno;
+    @Column(name = "ultimafosforo")
+    private double ultimaFosforo;
+    @Column(name = "ultimapotasio")
+    private double ultimaPotasio;
+    @Column(name = "unidadMedida")
+    private String unidadMedida;
     @ManyToOne
     @JoinColumn(name = "idSistema")
     private SistemaRiego sistemaRiego;

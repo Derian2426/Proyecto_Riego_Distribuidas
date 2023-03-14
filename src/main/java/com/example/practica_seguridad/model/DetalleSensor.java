@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class DetalleSensor {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idsSensorDetalle")
     private Integer idsSensorDetalle;
     @ManyToOne

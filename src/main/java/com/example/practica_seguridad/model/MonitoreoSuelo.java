@@ -15,15 +15,19 @@ public class MonitoreoSuelo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idSuelo")
     private Long idSuelo;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     @Column(name = "fechaMedicion")
     private Date fechaMedicion;
     @Column(name = "humedad")
     private double humedad;
-    @Column(name = "pH")
-    private double pH;
-    @Column(name = "nutrientes")
-    private String nutrientes;
+    @Column(name = "nitrogeno")
+    private double nitrogeno;
+    @Column(name = "fosforo")
+    private double fosforo;
+    @Column(name = "potasio")
+    private double potasio;
+    @Column(name = "unidadMedida")
+    private String unidadMedida;
     @ManyToOne
     @JoinColumn(name = "idZona")
     private ZonaRiego zonaRiego;

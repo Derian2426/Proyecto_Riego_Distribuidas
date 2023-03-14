@@ -29,7 +29,7 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(new ZonaRiego(), HttpStatus.CONFLICT);
     }
     @PutMapping
-    public  ResponseEntity<ZonaRiego> updateUser(@RequestBody ZonaRiego zonaRiego){
+    public  ResponseEntity<ZonaRiego> updateZonaRiego(@RequestBody ZonaRiego zonaRiego){
         return new ResponseEntity<>(zonaRiegoService.update(zonaRiego), HttpStatus.OK);
     }
     @GetMapping("/{id}")

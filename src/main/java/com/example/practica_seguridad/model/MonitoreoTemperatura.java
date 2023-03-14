@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 @Entity
@@ -15,7 +16,7 @@ public class MonitoreoTemperatura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idTemperatura")
     private Long idTemperatura;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     @Column(name = "fechaMedicion", nullable = false)
     private Date fechaMedicion;
     @Column(name = "temperatura")

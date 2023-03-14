@@ -1,9 +1,7 @@
 package com.example.practica_seguridad.controller;
 
 import com.example.practica_seguridad.exeptions.ModelNotFoundException;
-import com.example.practica_seguridad.model.InformeConsumo;
 import com.example.practica_seguridad.model.MonitoreoSuelo;
-import com.example.practica_seguridad.service.InformeConsumoService;
 import com.example.practica_seguridad.service.MonitoreoSueloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -39,19 +39,23 @@ public class UsuarioController {
     public ResponseEntity<Usuario> finById(@PathVariable("id") Integer idUsuario){
         Usuario usuario= usuarioService.findById(idUsuario);
         if (usuario==null)
-            throw new ModelNotFoundException("El usuario no fue encontrado!!!");
+            return new ResponseEntity<>(new Usuario(), HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(usuario,HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable("id") Integer idUsuario) throws Exception {
         Usuario usuario= usuarioService.findById(idUsuario);
         if (usuario==null)
-            throw new ModelNotFoundException("El usuario que pretende eliminar no existe!!!");
+            return new ResponseEntity<>(new Usuario(), HttpStatus.NOT_FOUND);
         usuarioService.delete(idUsuario);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(usuario,HttpStatus.OK);
     }
     @PostMapping("/busquedaUsuario")
     public  ResponseEntity<Usuario> busquedaUser(@RequestBody Usuario usuario){
-        return new ResponseEntity<>(usuarioService.findByEmail(usuario.getEmail()), HttpStatus.OK);
+        Usuario usuarioBusqueda=usuarioService.findByEmail(usuario.getEmail());
+        if(usuarioBusqueda==null)
+            return new ResponseEntity<>(new Usuario(), HttpStatus.NOT_FOUND);
+        else
+            return new ResponseEntity<>(usuarioBusqueda, HttpStatus.OK);
     }
 }

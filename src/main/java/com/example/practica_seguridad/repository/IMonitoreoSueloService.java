@@ -10,5 +10,6 @@ public interface IMonitoreoSueloService {
     MonitoreoSuelo update(MonitoreoSuelo monitoreoSuelo);
     MonitoreoSuelo findById(Integer idMonitoreoSuelo);
     List<MonitoreoSuelo> findAll();
+    List<MonitoreoSuelo> findByIdZona(Integer idZona);
     void delete(Integer idMonitoreoSuelo);
 }

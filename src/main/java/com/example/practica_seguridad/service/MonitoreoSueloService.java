@@ -35,6 +35,11 @@ public class MonitoreoSueloService implements IMonitoreoSueloService {
     }
 
     @Override
+    public List<MonitoreoSuelo> findByIdZona(Integer idZona) {
+        return null;
+    }
+
+    @Override
     public void delete(Integer idMonitoreoSuelo) {
         monitoreoSueloRepository.deleteById(idMonitoreoSuelo);
     }
