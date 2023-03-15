@@ -25,4 +25,6 @@ public class Sensor {
     private Date fechaInstalacion;
     @Column(name = "tipoSensor")
     private String tipoSensor;
+    @Column(name = "urlSensor")
+    private String urlSensor;
 }

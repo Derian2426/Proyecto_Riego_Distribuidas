@@ -2,6 +2,7 @@ package com.example.practica_seguridad.controller;
 
 import com.example.practica_seguridad.exeptions.ModelNotFoundException;
 import com.example.practica_seguridad.model.MonitoreoSuelo;
+import com.example.practica_seguridad.model.ZonaRiego;
 import com.example.practica_seguridad.service.MonitoreoSueloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,5 +45,9 @@ public class MonitoreoSueloController {
             throw new ModelNotFoundException("La cosecha no se puede eliminar");
         monitoreoSueloService.delete(idMonitoreoSuelo);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("/sueloEstado")
+    public ResponseEntity<List<MonitoreoSuelo>> listaMonitoreoTemperatura(@RequestBody ZonaRiego zonaRiego){
+        return new ResponseEntity<>(monitoreoSueloService.findAllSuelo(zonaRiego), HttpStatus.OK);
     }
 }
