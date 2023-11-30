@@ -1,7 +1,7 @@
 package com.example.practica_seguridad.service;
 
 import com.example.practica_seguridad.model.Usuario;
-import com.example.practica_seguridad.repository.IUsuarioService;
+import com.example.practica_seguridad.interfaces.IUsuarioService;
 import com.example.practica_seguridad.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

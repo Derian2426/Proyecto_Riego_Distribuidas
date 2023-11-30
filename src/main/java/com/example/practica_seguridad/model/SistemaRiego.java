@@ -2,14 +2,15 @@ package com.example.practica_seguridad.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Data
 @Table(name = "sistemaRiego")
+@AllArgsConstructor
 public class SistemaRiego {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +21,7 @@ public class SistemaRiego {
     @Column(name = "tipo")
     private String tipo;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Column(name = "fechaInstalacion")
+    @Column(name = "fechaInstalacion", nullable = false)
     private Date fechaInstalacion;
     @Column(name = "modoRiego")
     private String modoRiego;
@@ -32,4 +33,14 @@ public class SistemaRiego {
     @ManyToOne
     @JoinColumn(name = "idUsuario")
     private Usuario usuario;
+
+    public SistemaRiego(Long idSistema, String nombre, String tipo) {
+        this.idSistema = idSistema;
+        this.nombre = nombre;
+        this.tipo = tipo;
+    }
+
+    public SistemaRiego() {
+
+    }
 }

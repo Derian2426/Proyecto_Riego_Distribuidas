@@ -2,14 +2,15 @@ package com.example.practica_seguridad.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "monitoreoSuelo")
 @Data
+@AllArgsConstructor
 public class MonitoreoSuelo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +32,13 @@ public class MonitoreoSuelo {
     @ManyToOne
     @JoinColumn(name = "idZona")
     private ZonaRiego zonaRiego;
+
+    public MonitoreoSuelo() {
+
+    }
+
+    public MonitoreoSuelo(Long idSuelo, String unidadMedida) {
+        this.idSuelo = idSuelo;
+        this.unidadMedida = unidadMedida;
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.practica_seguridad.repository;
+package com.example.practica_seguridad.interfaces;
 
 import com.example.practica_seguridad.model.DetalleSensor;
 

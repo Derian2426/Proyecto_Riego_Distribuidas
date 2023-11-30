@@ -2,12 +2,14 @@ package com.example.practica_seguridad.service;
 
 import com.example.practica_seguridad.model.MonitoreoSuelo;
 import com.example.practica_seguridad.model.ZonaRiego;
-import com.example.practica_seguridad.repository.IMonitoreoSueloService;
+import com.example.practica_seguridad.interfaces.IMonitoreoSueloService;
 import com.example.practica_seguridad.repository.MonitoreoSueloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,39 +17,76 @@ import java.util.Optional;
 public class MonitoreoSueloService implements IMonitoreoSueloService {
     @Autowired
     private MonitoreoSueloRepository monitoreoSueloRepository;
+
     @Override
+    @Transactional
     public MonitoreoSuelo create(MonitoreoSuelo monitoreoSuelo) {
-        return monitoreoSueloRepository.save(monitoreoSuelo);
-    }
-
-    @Override
-    public MonitoreoSuelo update(MonitoreoSuelo monitoreoSuelo) {
-        return monitoreoSueloRepository.save(monitoreoSuelo);
-    }
-
-    @Override
-    public MonitoreoSuelo findById(Integer idMonitoreoSuelo) {
-        Optional<MonitoreoSuelo> monitoreoSuelo=monitoreoSueloRepository.findById(idMonitoreoSuelo);
-        return monitoreoSuelo.orElse(null);
-    }
-
-    @Override
-    public List<MonitoreoSuelo> findAll() {
-        return monitoreoSueloRepository.findAll();
-    }
-
-    @Override
-    public List<MonitoreoSuelo> findAllSuelo(ZonaRiego zonaRiego) {
         try {
-            return monitoreoSueloRepository.findByZonaRiego(zonaRiego)
-                    .orElseThrow(() -> new IllegalArgumentException("No ambient temperature log available."));
-        }catch (Exception e){
+            monitoreoSuelo.setFechaMedicion(new Date());
+            return monitoreoSueloRepository.save(monitoreoSuelo);
+        } catch (Exception e) {
+            return new MonitoreoSuelo(-1L, e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public MonitoreoSuelo update(MonitoreoSuelo monitoreoSuelo) {
+        try {
+            return monitoreoSueloRepository.save(monitoreoSuelo);
+        } catch (Exception e) {
+            return new MonitoreoSuelo(-1L, e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public MonitoreoSuelo findById(Integer idMonitoreoSuelo) {
+        try {
+            Optional<MonitoreoSuelo> monitoreoSuelo = monitoreoSueloRepository.findById(idMonitoreoSuelo);
+            return monitoreoSuelo.orElse(null);
+        } catch (Exception e) {
+            return new MonitoreoSuelo(-1L, e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<MonitoreoSuelo> findAll() {
+        try {
+            return monitoreoSueloRepository.findAll();
+        } catch (Exception e) {
             return new ArrayList<>();
         }
     }
 
     @Override
+    @Transactional
+    public List<MonitoreoSuelo> findAllSuelo(ZonaRiego zonaRiego) {
+        try {
+            return monitoreoSueloRepository.findByZonaRiego(zonaRiego)
+                    .orElseThrow(() -> new IllegalArgumentException("No ambient temperature log available."));
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    @Transactional
     public void delete(Integer idMonitoreoSuelo) {
-        monitoreoSueloRepository.deleteById(idMonitoreoSuelo);
+        try {
+            monitoreoSueloRepository.deleteById(idMonitoreoSuelo);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Transactional
+    public List<MonitoreoSuelo> findByFecha(ZonaRiego zonaRiego, Date fecha) {
+        try {
+            return monitoreoSueloRepository.findByZonaRiegoAndFechaMedicion(zonaRiego, fecha);
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 }

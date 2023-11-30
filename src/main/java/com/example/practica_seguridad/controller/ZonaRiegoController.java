@@ -1,54 +1,143 @@
 package com.example.practica_seguridad.controller;
 
-import com.example.practica_seguridad.exeptions.ModelNotFoundException;
-import com.example.practica_seguridad.model.SistemaRiego;
-import com.example.practica_seguridad.model.Usuario;
-import com.example.practica_seguridad.model.ZonaRiego;
+import com.example.practica_seguridad.model.*;
+import com.example.practica_seguridad.security.TokenUtils;
 import com.example.practica_seguridad.service.ZonaRiegoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/zonaRiego")
+@RequestMapping("/api/zonaRiego")
 public class ZonaRiegoController {
     @Autowired
     private ZonaRiegoService zonaRiegoService;
-    @GetMapping
-    public ResponseEntity<List<ZonaRiego>> listaZonaRiego(){
-        return new ResponseEntity<>(zonaRiegoService.findAll(), HttpStatus.OK);
+    private ZonaRiego zonaRiego;
+
+    @GetMapping("/zonas")
+    public ResponseEntity<List<ZonaRiego>> listaZonaRiego() {
+        try {
+            return new ResponseEntity<>(zonaRiegoService.findAll(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
     }
-    @PostMapping
-    public ResponseEntity<ZonaRiego> createZonaRiego(@RequestBody ZonaRiego zonaRiego){
-        if (zonaRiego!=null)
-            return new ResponseEntity<>(zonaRiegoService.create(zonaRiego), HttpStatus.CREATED);
-        else
-            return new ResponseEntity<>(new ZonaRiego(), HttpStatus.CONFLICT);
+    @PostMapping("/autorizacion")
+    public String verificarZona(@RequestBody ZonaRiego zonaRiego) {
+        if (zonaRiegoService.findByDireccionMac(zonaRiego.getDireccionMAC()) != null) {
+            return TokenUtils.createToken(zonaRiego.getNombreZona(), String.valueOf(zonaRiego.getDireccionMAC()));
+        } else {
+            return "No se logro verificar el sensor";
+        }
     }
-    @PutMapping
-    public  ResponseEntity<ZonaRiego> updateZonaRiego(@RequestBody ZonaRiego zonaRiego){
-        return new ResponseEntity<>(zonaRiegoService.update(zonaRiego), HttpStatus.OK);
+
+    @PostMapping("/registro")
+    public ResponseEntity<ZonaRiego> createZonaRiego(@RequestBody DatosSensoresZonas zonaRiegoRequest) {
+        try {
+            if (zonaRiegoRequest == null) {
+                return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error. Vuelva a intentarlo luego."), HttpStatus.BAD_REQUEST);
+            }
+            zonaRiego = zonaRiegoService.create(zonaRiegoRequest);
+            if (zonaRiego != null && zonaRiego.getIdZona() > 0) {
+                return new ResponseEntity<>(zonaRiego, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ZonaRiego(-1L, zonaRiegoRequest.getZonas().getNombreZona()), HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<ZonaRiego> finById(@PathVariable("id") Integer idzonaRiego){
-        ZonaRiego zonaRiego= zonaRiegoService.findById(idzonaRiego);
-        if (zonaRiego==null)
-            throw new ModelNotFoundException("La zona de riego no fue encontrado!!!");
-        return new ResponseEntity<>(zonaRiego,HttpStatus.OK);
+
+    @PostMapping("/actualizar")
+    public ResponseEntity<ZonaRiego> updateZonaRiego(@RequestBody DatosSensoresZonas zonaRiegoRequest) {
+        try {
+            if (zonaRiegoRequest == null) {
+                return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error. Vuelva a intentarlo luego."), HttpStatus.BAD_REQUEST);
+            }
+            zonaRiego = zonaRiegoService.update(zonaRiegoRequest);
+            if (zonaRiego != null && zonaRiego.getIdZona() > 0) {
+                return new ResponseEntity<>(zonaRiego, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ZonaRiego(-1L, zonaRiegoRequest.getZonas().getNombreZona()), HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+    @PostMapping("/actualizarmonitoreo")
+    public ResponseEntity<ZonaRiego> updateZonaRiego(@RequestBody ZonaRiego zonaRiegoRequest) {
+        try {
+            if (zonaRiegoRequest == null) {
+                return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error. Vuelva a intentarlo luego."), HttpStatus.BAD_REQUEST);
+            }
+            zonaRiego = zonaRiegoService.updateZona(zonaRiegoRequest);
+            if (zonaRiego != null && zonaRiego.getIdZona() > 0) {
+                return new ResponseEntity<>(zonaRiego, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ZonaRiego(-1L, zonaRiegoRequest.getNombreZona()), HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable("id") Integer idzonaRiego) throws Exception {
-        ZonaRiego zonaRiego= zonaRiegoService.findById(idzonaRiego);
-        if (zonaRiego==null)
-            throw new ModelNotFoundException("La zona de riego que pretende eliminar no existe!!!");
-        zonaRiegoService.delete(idzonaRiego);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<ZonaRiego> delete(@PathVariable("id") Integer idzonaRiego) throws Exception {
+        try {
+            zonaRiego = zonaRiegoService.findById(idzonaRiego);
+            if (zonaRiego == null)
+                return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.CONFLICT);
+            zonaRiegoService.delete(idzonaRiego);
+            return new ResponseEntity<>(zonaRiego, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
     @PostMapping("/listaZonaRiego")
-    public ResponseEntity<List<ZonaRiego>> listaSistema(@RequestBody SistemaRiego sistemaRiego){
-        return new ResponseEntity<>(zonaRiegoService.findBySistemaRiego(sistemaRiego), HttpStatus.OK);
+    public ResponseEntity<List<ZonaRiego>> listaSistema(@RequestBody SistemaRiego sistemaRiego) {
+        try {
+            return new ResponseEntity<>(zonaRiegoService.findBySistemaRiego(sistemaRiego), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/busqueda")
+    public ResponseEntity<List<ZonaRiego>> busquedaZona(@RequestBody ZonaRiego zonaRequest) {
+        try {
+            if (zonaRequest == null)
+                return new ResponseEntity<>(zonaRiegoService.findAll(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(zonaRiegoService.findByNombre(zonaRequest.getNombreZona()), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(zonaRiegoService.findAll(), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/listasensores")
+    public ResponseEntity<List<Sensor>> listaEnfermedad(@RequestBody ZonaRiego zonaRequest) {
+        try {
+            return new ResponseEntity<>(zonaRiegoService.findListaSensores(zonaRequest), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/{direccionMAC}")
+    public ResponseEntity<ZonaRiego> buscarDireccionMac(@PathVariable("direccionMAC") String direccionMAC) {
+        try {
+            zonaRiego = zonaRiegoService.findByDireccionMac(direccionMAC);
+            if (zonaRiego == null)
+                return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(zonaRiego, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

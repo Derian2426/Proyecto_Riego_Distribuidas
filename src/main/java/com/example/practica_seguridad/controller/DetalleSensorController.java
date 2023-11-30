@@ -21,7 +21,7 @@ public class DetalleSensorController {
     private DetalleSensorService detalleSensorService;
     @PostMapping("/datosSensoresZonas")
     public void recibirDatosSensoresZonas(@RequestBody DatosSensoresZonas datosSensoresZonas) {
-        List<Sensor> sensores = datosSensoresZonas.getSensores();
+        /*List<Sensor> sensores = datosSensoresZonas.getSensores();
         List<ZonaRiego> zonas = datosSensoresZonas.getZonas();
         List<DetalleSensor> detalles = new ArrayList<>();
         for (int i = 0; i < sensores.size(); i++) {
@@ -32,6 +32,6 @@ public class DetalleSensorController {
             detalleSensor.setZona(zona);
             detalles.add(detalleSensor);
         }
-        detalleSensorService.saveAll(detalles);
+        detalleSensorService.saveAll(detalles);*/
     }
 }

@@ -9,32 +9,107 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/autorizacion")
+@RequestMapping("/api/sistema")
+//@RequestMapping("/autorizacion")
 public class ArduinoController {
 
     @Autowired
     private ArduinoService arduinoService;
+    private SistemaRiego sistemaRiego;
+
     @PostMapping
-    public String verificarSistema(@RequestBody SistemaRiego sistemaRiego){
-        if(arduinoService.findByName(sistemaRiego.getNombre())!=null){
-            return TokenUtils.createToken(sistemaRiego.getNombre(),String.valueOf(sistemaRiego.getTipo()));
-        }else{
+    public String verificarSistema(@RequestBody SistemaRiego sistemaRiego) {
+        if (arduinoService.findByName(sistemaRiego.getNombre()) != null) {
+            return TokenUtils.createToken(sistemaRiego.getNombre(), String.valueOf(sistemaRiego.getTipo()));
+        } else {
             return "No se logro verificar el sensor";
         }
     }
-    @PostMapping("/registroSistema")
-    public void registrarSistema(@RequestBody SistemaRiego sistemaRiego){
-        if (sistemaRiego!=null)
-            arduinoService.create(sistemaRiego);
-        else
-            System.out.println("Ocurrio un error");
+
+    @PostMapping("/registro")
+    public ResponseEntity<SistemaRiego> registraSistema(@RequestBody SistemaRiego sistemaRiegoRequest) {
+        try {
+            if (sistemaRiegoRequest == null) {
+                return new ResponseEntity<>(new SistemaRiego(-1L, "Ocurrió un error. Vuelva a intentarlo luego.", "Campos Incompletos"), HttpStatus.BAD_REQUEST);
+            }
+            sistemaRiego = arduinoService.create(sistemaRiegoRequest);
+            if (sistemaRiego != null && sistemaRiego.getIdSistema() > 0) {
+                return new ResponseEntity<>(sistemaRiego, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new SistemaRiego(-1L, sistemaRiegoRequest.getNombre(), "Valores ya anteriormente registrados."), HttpStatus.OK);
+            }
+        } catch (NullPointerException ex) {
+            return new ResponseEntity<>(new SistemaRiego(-1L, "Ocurrió un error inesperado.", "Campos Incompletos"), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new SistemaRiego(-1L, "Ocurrió un error inesperado.", "Error interno"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+    @PostMapping("/actualizar")
+    public ResponseEntity<SistemaRiego> actulizarTipoCultivo(@RequestBody SistemaRiego sistemaRiegoRequest) {
+        try {
+            if (sistemaRiegoRequest == null) {
+                return new ResponseEntity<>(new SistemaRiego(-1L, "Ocurrió un error. Vuelva a intentarlo luego.", "Campos Incompletos"), HttpStatus.BAD_REQUEST);
+            }
+            sistemaRiego = arduinoService.update(sistemaRiegoRequest);
+            if (sistemaRiego != null && sistemaRiego.getIdSistema() > 0) {
+                return new ResponseEntity<>(sistemaRiego, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new SistemaRiego(-1L, sistemaRiegoRequest.getNombre(), "Valores ya anteriormente registrados."), HttpStatus.OK);
+            }
+        } catch (NullPointerException ex) {
+            return new ResponseEntity<>(new SistemaRiego(-1L, "Ocurrió un error inesperado.", "Campos Incompletos"), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new SistemaRiego(-1L, "Ocurrió un error inesperado.", "Error interno"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/listasistema")
+    public ResponseEntity<List<SistemaRiego>> listaTipoCultivo() {
+        try {
+            return new ResponseEntity<>(arduinoService.findAll(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
+    }
+
     @PostMapping("/listaSistema")
-    public ResponseEntity<List<SistemaRiego>> listaSistema(@RequestBody Usuario usuario){
-        return new ResponseEntity<>(arduinoService.findByUsuario(usuario), HttpStatus.OK);
+    public ResponseEntity<List<SistemaRiego>> listaSistema(@RequestBody Usuario usuario) {
+        try {
+            return new ResponseEntity<>(arduinoService.findByUsuario(usuario), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.CONFLICT);
+        }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SistemaRiego> delete(@PathVariable("id") Integer idSistemaRiego) {
+        try {
+            sistemaRiego = arduinoService.findById(idSistemaRiego);
+            if (sistemaRiego == null)
+                return new ResponseEntity<>(new SistemaRiego(-1L, "Ocurrió un error inesperado.", "Error interno"), HttpStatus.CONFLICT);
+            arduinoService.delete(idSistemaRiego);
+            return new ResponseEntity<>(sistemaRiego, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new SistemaRiego(-1L, "Ocurrió un error inesperado.", "Error interno"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/busqueda")
+    public ResponseEntity<List<SistemaRiego>> busquedaSistemaRiego(@RequestBody SistemaRiego sistemaRiegoRequest) {
+        try {
+            if (sistemaRiegoRequest == null)
+                return new ResponseEntity<>(arduinoService.findAll(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(arduinoService.findByNombre(sistemaRiegoRequest.getNombre()), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(arduinoService.findAll(), HttpStatus.OK);
+        }
+    }
+
 
 }

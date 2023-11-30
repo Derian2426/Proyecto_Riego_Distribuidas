@@ -2,14 +2,15 @@ package com.example.practica_seguridad.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Data
 @Table(name = "detalleConsume")
+@AllArgsConstructor
 public class InformeConsumo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +26,13 @@ public class InformeConsumo {
     @ManyToOne
     @JoinColumn(name = "idDeposito")
     private DepositoAgua depositoAgua;
+
+    public InformeConsumo() {
+
+    }
+
+    public InformeConsumo(Long idConsumo, Double cantidadConsumo) {
+        this.idConsumo = idConsumo;
+        this.cantidadConsumo = cantidadConsumo;
+    }
 }

@@ -2,47 +2,123 @@ package com.example.practica_seguridad.controller;
 
 import com.example.practica_seguridad.exeptions.ModelNotFoundException;
 import com.example.practica_seguridad.model.DepositoAgua;
+import com.example.practica_seguridad.model.MonitoreoTemperatura;
+import com.example.practica_seguridad.model.TipoCultivo;
+import com.example.practica_seguridad.model.ZonaRiego;
 import com.example.practica_seguridad.service.DepositoAguaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Deposito")
+@RequestMapping("/api/Deposito")
 public class DepositoAguaController {
     @Autowired
     private DepositoAguaService depositoAguaService;
-    @GetMapping
-    public ResponseEntity<List<DepositoAgua>> listaDeposito(){
-        return new ResponseEntity<>(depositoAguaService.findAll(), HttpStatus.OK);
+    private DepositoAgua depositoAgua;
+
+    @GetMapping("/listadeposito")
+    public ResponseEntity<List<DepositoAgua>> listaDeposito() {
+        try {
+            return new ResponseEntity<>(depositoAguaService.findAll(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
     }
-    @PostMapping
-    public ResponseEntity<DepositoAgua> createrDeposito(@RequestBody DepositoAgua depositoAgua){
-        if (depositoAgua!=null)
-            return new ResponseEntity<>(depositoAguaService.create(depositoAgua), HttpStatus.OK);
-        else
-            return new ResponseEntity<>(new DepositoAgua(), HttpStatus.CONFLICT);
+
+    @PostMapping("/registro")
+    public ResponseEntity<DepositoAgua> createrDeposito(@RequestBody DepositoAgua depositoAguaRequest) {
+        try {
+            if (depositoAguaRequest == null) {
+                return new ResponseEntity<>(new DepositoAgua(-1L, "Ocurrió un error. Vuelva a intentarlo luego."), HttpStatus.BAD_REQUEST);
+            }
+            depositoAgua = depositoAguaService.create(depositoAguaRequest);
+            if (depositoAgua != null && depositoAgua.getIdDeposito() > 0) {
+                return new ResponseEntity<>(depositoAgua, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new DepositoAgua(-1L, depositoAguaRequest.getDescripcion()), HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new DepositoAgua(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    @PutMapping
-    public  ResponseEntity<DepositoAgua> updateUser(@RequestBody DepositoAgua depositoAgua){
-        return new ResponseEntity<>(depositoAguaService.update(depositoAgua), HttpStatus.OK);
+
+    @PostMapping("/actualizar")
+    public ResponseEntity<DepositoAgua> updateDeposito(@RequestBody DepositoAgua depositoAguaRequest) {
+        try {
+            if (depositoAguaRequest == null) {
+                return new ResponseEntity<>(new DepositoAgua(-1L, "Ocurrió un error. Vuelva a intentarlo luego."), HttpStatus.BAD_REQUEST);
+            }
+            depositoAgua = depositoAguaService.update(depositoAguaRequest);
+            if (depositoAgua != null && depositoAgua.getIdDeposito() > 0) {
+                return new ResponseEntity<>(depositoAgua, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new DepositoAgua(-1L, depositoAguaRequest.getDescripcion()), HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new DepositoAgua(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<DepositoAgua> finById(@PathVariable("id") Integer idDepositoAgua){
-        DepositoAgua depositoAgua= depositoAguaService.findById(idDepositoAgua);
-        if (depositoAgua==null)
-            throw new ModelNotFoundException("No se encontro una cosecha");
-        return new ResponseEntity<>(depositoAgua,HttpStatus.OK);
-    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable("id") Integer idDepositoAgua) throws Exception {
-        DepositoAgua cosecha= depositoAguaService.findById(idDepositoAgua);
-        if (cosecha==null)
-            throw new ModelNotFoundException("El deposito de agua no se puede eliminar");
-        depositoAguaService.delete(idDepositoAgua);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<DepositoAgua> delete(@PathVariable("id") Integer idDepositoAgua) throws Exception {
+        try {
+            DepositoAgua deposito = depositoAguaService.findById(idDepositoAgua);
+            if (deposito == null)
+                return new ResponseEntity<>(new DepositoAgua(-1L, "Ocurrió un error inesperado."), HttpStatus.CONFLICT);
+            depositoAguaService.delete(idDepositoAgua);
+            return new ResponseEntity<>(deposito, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new DepositoAgua(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/busqueda")
+    public ResponseEntity<List<DepositoAgua>> busquedaDeposito(@RequestBody DepositoAgua depositoAguaRequest) {
+        try {
+            if (depositoAguaRequest == null)
+                return new ResponseEntity<>(depositoAguaService.findAll(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(depositoAguaService.findByDescripcion(depositoAguaRequest.getDescripcion()), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(depositoAguaService.findAll(), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/depositos")
+    public ResponseEntity<List<DepositoAgua>> listaDepositoAgua(@RequestBody ZonaRiego zonaRiego) {
+        try {
+            return new ResponseEntity<>(depositoAguaService.findByZonaRiego(zonaRiego), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/deposito")
+    public ResponseEntity<List<DepositoAgua>> busquedadireccionMac(@RequestBody DepositoAgua depositoAguaRequest) {
+        try {
+            if (depositoAguaRequest == null)
+                return new ResponseEntity<>(depositoAguaService.findAll(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(depositoAguaService.findByDescripcion(depositoAguaRequest.getDescripcion()), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(depositoAguaService.findAll(), HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/{direccionMAC}")
+    public ResponseEntity<DepositoAgua> buscarDireccionMac(@PathVariable("direccionMAC") String direccionMAC) {
+        try {
+            depositoAgua = depositoAguaService.findByDireccionMAC(direccionMAC);
+            if (depositoAgua == null)
+                return new ResponseEntity<>(new DepositoAgua(-1L, "Ocurrió un error inesperado."), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(depositoAgua, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DepositoAgua(-1L, "Ocurrió un error inesperado."), HttpStatus.CONFLICT);
+        }
     }
 }

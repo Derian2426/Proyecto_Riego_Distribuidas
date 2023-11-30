@@ -2,6 +2,7 @@ package com.example.practica_seguridad.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -26,4 +27,29 @@ public class MonitoreoTemperatura {
     @ManyToOne
     @JoinColumn(name = "idZona")
     private ZonaRiego zonaRiego;
+
+    public MonitoreoTemperatura() {
+
+    }
+
+    public MonitoreoTemperatura(Long idTemperatura) {
+        this.idTemperatura = idTemperatura;
+    }
+
+    public MonitoreoTemperatura(Long idTemperatura, Date fechaMedicion, double temperatura, double humedad, Long zonaRiego) {
+        this.zonaRiego = new ZonaRiego();
+        this.idTemperatura = idTemperatura;
+        this.fechaMedicion = fechaMedicion;
+        this.temperatura = temperatura;
+        this.humedad = humedad;
+        this.zonaRiego.setIdZona(zonaRiego);
+    }
+
+    public MonitoreoTemperatura(Long idTemperatura, Date fechaMedicion, double temperatura, double humedad, ZonaRiego zonaRiego) {
+        this.idTemperatura = idTemperatura;
+        this.fechaMedicion = fechaMedicion;
+        this.temperatura = temperatura;
+        this.humedad = humedad;
+        this.zonaRiego = zonaRiego;
+    }
 }

@@ -2,6 +2,7 @@ package com.example.practica_seguridad.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "Sensor")
 @Data
+@AllArgsConstructor
 public class Sensor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,4 +29,14 @@ public class Sensor {
     private String tipoSensor;
     @Column(name = "urlSensor")
     private String urlSensor;
+
+    public Sensor() {
+
+    }
+
+    public Sensor(Long idSensor, String nombre, String descripcion) {
+        this.idSensor = idSensor;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+    }
 }

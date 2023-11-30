@@ -2,7 +2,7 @@ package com.example.practica_seguridad.service;
 
 import com.example.practica_seguridad.model.DetalleSensor;
 import com.example.practica_seguridad.repository.DetalleSensorRepository;
-import com.example.practica_seguridad.repository.IDetalleSensor;
+import com.example.practica_seguridad.interfaces.IDetalleSensor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
