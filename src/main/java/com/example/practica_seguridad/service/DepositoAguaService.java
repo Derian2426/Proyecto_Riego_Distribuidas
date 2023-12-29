@@ -38,6 +38,10 @@ public class DepositoAguaService implements IDepositoAgua {
             if (existingDeposito != null && !existingDeposito.getIdDeposito().equals(depositoAgua.getIdDeposito())) {
                 return new DepositoAgua(-1L, "");
             }
+            if(depositoAgua.getNivelAgua()>0)
+                depositoAgua.setEstadoTanque(true);
+            else
+                depositoAgua.setEstadoTanque(false);
             return depositoAguaService.save(depositoAgua);
         } catch (Exception e) {
             return new DepositoAgua(-1L, e.getMessage());
@@ -85,11 +89,32 @@ public class DepositoAguaService implements IDepositoAgua {
     }
 
     @Transactional
-    public List<DepositoAgua> findByZonaRiego(ZonaRiego zonaRiego) {
+    public DepositoAgua findByZonaRiego(ZonaRiego zonaRiego,String liquido) {
         try {
-            return depositoAguaService.findByZonaRiego(zonaRiego);
+            DepositoAgua tanqueNutriente= new DepositoAgua();
+            DepositoAgua tanqueNutrienteMayor= new DepositoAgua();
+            List<DepositoAgua> depositoAguas=depositoAguaService.findByZonaRiegoAndLiquido(zonaRiego,liquido);
+            for (DepositoAgua depositoNutriente:depositoAguas){
+                if(depositoAguas.size()==1){
+                    tanqueNutriente=depositoNutriente;
+                    break;
+                }else{
+                    if(!depositoNutriente.getEstadoTanque()){
+                        tanqueNutriente=depositoNutriente;
+                        break;
+                    }else {
+                        if(tanqueNutrienteMayor.getNivelAgua()>depositoNutriente.getNivelAgua()){
+                            tanqueNutriente=tanqueNutrienteMayor;
+                        }else{
+                            tanqueNutrienteMayor=depositoNutriente;
+                            tanqueNutriente=depositoNutriente;
+                        }
+                    }
+                }
+            }
+            return tanqueNutriente;
         } catch (Exception e) {
-            return new ArrayList<>();
+            return new DepositoAgua();
         }
     }
     @Transactional

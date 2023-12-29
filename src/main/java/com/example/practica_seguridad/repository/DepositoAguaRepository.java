@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface DepositoAguaRepository extends JpaRepository<DepositoAgua, Integer> {
-    DepositoAgua findByDescripcion(String depositoAgua);
+    DepositoAgua findByLiquido(String liquido);
 
     List<DepositoAgua> findByDescripcionContainingIgnoreCase(String depositoAgua);
-    List<DepositoAgua> findByZonaRiego(ZonaRiego zonaRiego);
+    List<DepositoAgua> findByZonaRiegoAndLiquido(ZonaRiego zonaRiego,String liquido);
     DepositoAgua findByDireccionMAC(String direccionMac);
 }

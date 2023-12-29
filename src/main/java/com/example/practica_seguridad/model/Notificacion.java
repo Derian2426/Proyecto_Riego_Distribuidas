@@ -20,6 +20,7 @@ public class Notificacion {
     private Date fecha;
     private String mensaje;
     private boolean visto;
+    private String sensorNotificacion;
     @ManyToOne
     @JoinColumn(name = "idZona")
     private ZonaRiego zonaRiego;

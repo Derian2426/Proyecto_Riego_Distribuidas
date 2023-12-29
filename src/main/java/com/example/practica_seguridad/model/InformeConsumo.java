@@ -23,6 +23,11 @@ public class InformeConsumo {
     private Double cantidadConsumo;
     @Column(name = "tiempoRiego")
     private Double tiempoRiego;
+    @Column(name = "cantidadRestante")
+    private Double cantidadRestante;
+    @Column(name = "estadoTanque")
+    private Boolean estadoTanque;
+
     @ManyToOne
     @JoinColumn(name = "idDeposito")
     private DepositoAgua depositoAgua;

@@ -77,7 +77,7 @@ public class ArduinoController {
         }
     }
 
-    @PostMapping("/listaSistema")
+    @PostMapping("/listaistemasuser")
     public ResponseEntity<List<SistemaRiego>> listaSistema(@RequestBody Usuario usuario) {
         try {
             return new ResponseEntity<>(arduinoService.findByUsuario(usuario), HttpStatus.OK);

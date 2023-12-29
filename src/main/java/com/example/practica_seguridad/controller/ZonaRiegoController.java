@@ -26,6 +26,7 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         }
     }
+
     @PostMapping("/autorizacion")
     public String verificarZona(@RequestBody ZonaRiego zonaRiego) {
         if (zonaRiegoService.findByDireccionMac(zonaRiego.getDireccionMAC()) != null) {
@@ -102,7 +103,8 @@ public class ZonaRiegoController {
     @PostMapping("/listaZonaRiego")
     public ResponseEntity<List<ZonaRiego>> listaSistema(@RequestBody SistemaRiego sistemaRiego) {
         try {
-            return new ResponseEntity<>(zonaRiegoService.findBySistemaRiego(sistemaRiego), HttpStatus.OK);
+            List<ZonaRiego> fila = zonaRiegoService.findBySistemaRiego(sistemaRiego);
+            return new ResponseEntity<>(fila, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         }

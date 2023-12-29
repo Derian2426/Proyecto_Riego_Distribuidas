@@ -1,6 +1,7 @@
 package com.example.practica_seguridad.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,12 +28,22 @@ public class DepositoAgua {
     private double capacidadTanque;
     @Column(name = "alturaTanque")
     private double alturaTanque;
+    @Column(name = "alturaSensor")
+    private double alturaSensor;
     @Column(name = "nivelAgua")
     private double nivelAgua;
     @Column(name = "porcentaje")
     private double porcentaje;
+    @Column(name = "cantidadLiquido")
+    private double cantidadLiquido;
+    @Column(name = "medicionLiquido")
+    private boolean medicionLiquido;
+    @Column(name = "estadoTanque")
+    private Boolean estadoTanque;
     @Column(name = "descripcion")
     private String descripcion;
+    @Column(name = "liquido")
+    private String liquido;
     @ManyToOne
     @JoinColumn(name = "idZona")
     private ZonaRiego zonaRiego;

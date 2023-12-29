@@ -3,6 +3,7 @@ package com.example.practica_seguridad.service;
 import com.example.practica_seguridad.model.DepositoAgua;
 import com.example.practica_seguridad.model.InformeConsumo;
 import com.example.practica_seguridad.interfaces.IInformeConsumo;
+import com.example.practica_seguridad.model.Notificacion;
 import com.example.practica_seguridad.repository.InformeConsumoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,34 @@ import java.util.Optional;
 public class InformeConsumoService implements IInformeConsumo {
     @Autowired
     private InformeConsumoRepository informeConsumoRepository;
+    @Autowired
+    private NotificacionesService notificacionesService;
+    @Autowired
+    private DepositoAguaService depositoAguaService;
 
     @Override
     @Transactional
     public InformeConsumo create(InformeConsumo informeConsumo) {
         try {
             informeConsumo.setFechaCosumo(new Date());
-            return informeConsumoRepository.save(informeConsumo);
+            informeConsumo.setTiempoRiego(informeConsumo.getTiempoRiego()/60000);
+            if (informeConsumo.getCantidadRestante() <= 0) {
+                if (informeConsumo.getDepositoAgua().getLiquido().equals("agua")) {
+                    notificacionesService.create(new Notificacion(0L, new Date(), "Los niveles del tanque de agua estan en cero.", false, "Sensor nivel agua", informeConsumo.getDepositoAgua().getZonaRiego()));
+                } else {
+                    notificacionesService.create(new Notificacion(0L, new Date(), "Los niveles del tanque de nutrientes estan en cero.", false, "Sensor nivel nutrientes", informeConsumo.getDepositoAgua().getZonaRiego()));
+                }
+            }
+            DepositoAgua depositoAgua = informeConsumo.getDepositoAgua();
+            depositoAgua.setNivelAgua(informeConsumo.getCantidadRestante());
+            depositoAgua.setPorcentaje((informeConsumo.getCantidadRestante() / depositoAgua.getCapacidadTanque()) * 100);
+            depositoAgua.setEstadoTanque(false);
+            depositoAgua.setMedicionLiquido(false);
+            depositoAguaService.update(depositoAgua);
+            if (informeConsumo.getCantidadConsumo() > 0)
+                return informeConsumoRepository.save(informeConsumo);
+            else
+                return new InformeConsumo(-1L, 0.0);
         } catch (Exception e) {
             return new InformeConsumo(-1L, 0.0);
         }
