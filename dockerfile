@@ -30,6 +30,8 @@ WORKDIR /app
 # Copiar archivos necesarios para la construcción de dependencias
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
+# Otorgar permisos de ejecución al script mvnw
+RUN chmod +x mvnw
 
 # Descargar las dependencias de Maven
 RUN ./mvnw dependency:go-offline
