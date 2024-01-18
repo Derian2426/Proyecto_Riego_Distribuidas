@@ -62,14 +62,14 @@ public interface MonitoreoTemperaturaRepository extends JpaRepository<MonitoreoT
     List<Object> obtenerDatosTemperaturaPorFechaYHoraPromedio(@Param("fecha") Date fecha, @Param("idZona")Integer zonaRiego);
 
 
-    @Query(value = "SELECT DISTINCT to_char(m.fechaMedicion, 'TMMonth') ," +
+    @Query(value = "SELECT to_char(m.fechaMedicion, 'TMMonth') ," +
             " :fecha , AVG(m.temperatura) , AVG(m.humedad) , m.zonaRiego.idZona" +
             " FROM MonitoreoTemperatura m" +
             " WHERE " +
             " EXTRACT(YEAR FROM m.fechaMedicion) = :fecha" +
             " AND m.zonaRiego = :zonaRiego " +
             " GROUP BY to_char(m.fechaMedicion, 'TMMonth'), m.zonaRiego.idZona" +
-            " ORDER BY to_char(m.fechaMedicion, 'TMMonth') desc")
+            " ORDER BY EXTRACT(MONTH FROM MIN(m.fechaMedicion)) Asc")
     List<Object> obtenerDatosTemperaturaPorAnio(@Param("fecha") String fecha, @Param("zonaRiego") ZonaRiego zonaRiego);
 
 

@@ -11,7 +11,7 @@ public interface ZonaRiegoRepository extends JpaRepository<ZonaRiego, Integer> {
     Optional<List<ZonaRiego>> findBySistemaRiego(SistemaRiego sistemaRiego);
 
     ZonaRiego findByNombreZona(String nombreZona);
-    ZonaRiego findByDireccionMAC(String direccionMac);
+    List<ZonaRiego> findByDireccionMAC(String direccionMac);
    List<ZonaRiego> findByNombreZonaContainingIgnoreCase(String nombreZona);
     ZonaRiego findByIdZona(Integer idZona);
 }

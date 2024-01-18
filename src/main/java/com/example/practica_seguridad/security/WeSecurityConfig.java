@@ -29,9 +29,11 @@ public class WeSecurityConfig {
         jwtAuthenticationFilter.setFilterProcessesUrl("/login");
         return httpSecurity.cors().and()
                 .csrf().disable()
-                .authorizeRequests().requestMatchers(HttpMethod.POST,"/autorizacion").permitAll()
-                .requestMatchers(HttpMethod.POST,"/usuarios").permitAll()
-                .anyRequest().permitAll()
+                .authorizeRequests().requestMatchers(HttpMethod.POST,"/api/sistema","/api/sistema/verificaciontanque").permitAll()
+                .requestMatchers(HttpMethod.POST,"/usuarios","/login").permitAll()
+                .requestMatchers("/ws","/ws/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/zonaRiego/**","/api/Deposito/**").permitAll()
+                //.anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -46,16 +48,21 @@ public class WeSecurityConfig {
                 .passwordEncoder(passwordEncoder())
                 .and().build();
     }
+
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*");
+        configuration.addAllowedOrigin("http://127.0.0.1:5500");
+        configuration.addAllowedOrigin("http://localhost:3000");
+        //configuration.addAllowedOrigin("*");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

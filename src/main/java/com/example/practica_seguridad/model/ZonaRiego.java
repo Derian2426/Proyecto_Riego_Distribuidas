@@ -14,6 +14,8 @@ public class ZonaRiego {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idZona")
     private Long idZona;
+    @Column(name = "estado")
+    private Boolean estado;
     @Column(name = "nombre")
     private String nombreZona;
     @Column(name = "largoZona")

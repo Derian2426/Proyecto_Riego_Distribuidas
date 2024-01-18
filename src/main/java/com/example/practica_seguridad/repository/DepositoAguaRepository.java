@@ -11,5 +11,5 @@ public interface DepositoAguaRepository extends JpaRepository<DepositoAgua, Inte
 
     List<DepositoAgua> findByDescripcionContainingIgnoreCase(String depositoAgua);
     List<DepositoAgua> findByZonaRiegoAndLiquido(ZonaRiego zonaRiego,String liquido);
-    DepositoAgua findByDireccionMAC(String direccionMac);
+    List<DepositoAgua> findByDireccionMAC(String direccionMac);
 }

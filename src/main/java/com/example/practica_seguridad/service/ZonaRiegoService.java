@@ -27,11 +27,18 @@ public class ZonaRiegoService implements IZonaRiegoService {
     @Transactional
     public ZonaRiego create(DatosSensoresZonas zonaRiego) {
         ZonaRiego zonaRiegoRegistro;
+        List<ZonaRiego> zonaRiegoList = zonaRiegoRepository.findByDireccionMAC(zonaRiego.getZonas().getDireccionMAC());
         try {
-            if (zonaRiegoRepository.findByNombreZona(zonaRiego.getZonas().getNombreZona()) != null
-                    && zonaRiegoRepository.findByDireccionMAC(zonaRiego.getZonas().getDireccionMAC()) != null) {
+            if (zonaRiegoRepository.findByNombreZona(zonaRiego.getZonas().getNombreZona()) != null) {
                 return new ZonaRiego(-1L, "");
             }
+            if(zonaRiegoList.size()>0){
+                for (ZonaRiego zona : zonaRiegoList) {
+                    zona.setEstado(false);
+                }
+                zonaRiegoRepository.saveAll(zonaRiegoList);
+            }
+            zonaRiego.getZonas().setEstado(true);
             zonaRiegoRegistro = zonaRiegoRepository.save(zonaRiego.getZonas());
             for (DetalleSensor sensor : zonaRiego.getSensores()) {
                 sensor.setZona(zonaRiegoRegistro);
@@ -121,7 +128,14 @@ public class ZonaRiegoService implements IZonaRiegoService {
     @Transactional
     public ZonaRiego findByDireccionMac(String direccionMac) {
         try {
-            return zonaRiegoRepository.findByDireccionMAC(direccionMac);
+            ZonaRiego riego= new ZonaRiego();
+            List<ZonaRiego> zonaRiegoList = zonaRiegoRepository.findByDireccionMAC(direccionMac);
+            for (ZonaRiego zonaRiego : zonaRiegoList) {
+                if(zonaRiego.getEstado()){
+                    riego=zonaRiego;
+                }
+            }
+            return riego;
         } catch (Exception e) {
             return new ZonaRiego(-1L, e.getMessage());
         }
@@ -177,6 +191,15 @@ public class ZonaRiegoService implements IZonaRiegoService {
             return zonaRiegoRepository.findByNombreZonaContainingIgnoreCase(nombre);
         } catch (Exception e) {
             return new ArrayList<>();
+        }
+    }
+
+    @Transactional
+    public ZonaRiego findByZonaRiego(ZonaRiego zonaRiego) {
+        try {
+            return zonaRiegoRepository.findByNombreZona(zonaRiego.getNombreZona());
+        } catch (Exception e) {
+            return new ZonaRiego();
         }
     }
 }

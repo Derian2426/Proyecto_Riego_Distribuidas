@@ -1,7 +1,9 @@
 package com.example.practica_seguridad.controller;
 
+import com.example.practica_seguridad.model.DepositoAgua;
 import com.example.practica_seguridad.model.SistemaRiego;
 import com.example.practica_seguridad.model.Usuario;
+import com.example.practica_seguridad.model.ZonaRiego;
 import com.example.practica_seguridad.security.TokenUtils;
 import com.example.practica_seguridad.service.ArduinoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/sistema")
-//@RequestMapping("/autorizacion")
 public class ArduinoController {
 
     @Autowired
@@ -22,9 +23,17 @@ public class ArduinoController {
     private SistemaRiego sistemaRiego;
 
     @PostMapping
-    public String verificarSistema(@RequestBody SistemaRiego sistemaRiego) {
-        if (arduinoService.findByName(sistemaRiego.getNombre()) != null) {
-            return TokenUtils.createToken(sistemaRiego.getNombre(), String.valueOf(sistemaRiego.getTipo()));
+    public String verificarSistema(@RequestBody ZonaRiego zonaRiego) {
+        if (arduinoService.findByName(zonaRiego.getSistemaRiego().getNombre()) != null) {
+            return TokenUtils.createToken(zonaRiego.getSistemaRiego().getNombre(), String.valueOf(zonaRiego.getSistemaRiego().getTipo()));
+        } else {
+            return "No se logro verificar el sensor";
+        }
+    }
+    @PostMapping("/verificaciontanque")
+    public String verificarTanque(@RequestBody DepositoAgua depositoAgua) {
+        if (arduinoService.findByName(depositoAgua.getZonaRiego().getSistemaRiego().getNombre()) != null) {
+            return TokenUtils.createToken(depositoAgua.getZonaRiego().getSistemaRiego().getNombre(), String.valueOf(depositoAgua.getZonaRiego().getSistemaRiego().getTipo()));
         } else {
             return "No se logro verificar el sensor";
         }

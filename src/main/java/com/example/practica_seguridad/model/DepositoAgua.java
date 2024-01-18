@@ -19,6 +19,8 @@ public class DepositoAgua {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idDeposito")
     private Long idDeposito;
+    @Column(name = "estado")
+    private Boolean estado;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "fecha")
     private Date fecha;

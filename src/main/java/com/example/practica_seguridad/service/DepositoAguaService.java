@@ -21,9 +21,14 @@ public class DepositoAguaService implements IDepositoAgua {
     @Transactional
     public DepositoAgua create(DepositoAgua depositoAgua) {
         try {
-            if (depositoAguaService.findByDireccionMAC(depositoAgua.getDireccionMAC()) != null) {
-                return new DepositoAgua(-1L, "");
+            List<DepositoAgua> depositoAguas = depositoAguaService.findByDireccionMAC(depositoAgua.getDireccionMAC());
+            if (depositoAguas.size() > 0) {
+                for (DepositoAgua agua : depositoAguas) {
+                    agua.setEstado(false);
+                }
+                depositoAguaService.saveAll(depositoAguas);
             }
+            depositoAgua.setEstado(true);
             return depositoAguaService.save(depositoAgua);
         } catch (Exception e) {
             return new DepositoAgua(-1L, e.getMessage());
@@ -34,14 +39,7 @@ public class DepositoAguaService implements IDepositoAgua {
     @Transactional
     public DepositoAgua update(DepositoAgua depositoAgua) {
         try {
-            DepositoAgua existingDeposito = depositoAguaService.findByDireccionMAC(depositoAgua.getDireccionMAC());
-            if (existingDeposito != null && !existingDeposito.getIdDeposito().equals(depositoAgua.getIdDeposito())) {
-                return new DepositoAgua(-1L, "");
-            }
-            if(depositoAgua.getNivelAgua()>0)
-                depositoAgua.setEstadoTanque(true);
-            else
-                depositoAgua.setEstadoTanque(false);
+            depositoAgua.setEstadoTanque(depositoAgua.getNivelAgua() > 0);
             return depositoAguaService.save(depositoAgua);
         } catch (Exception e) {
             return new DepositoAgua(-1L, e.getMessage());
@@ -89,25 +87,25 @@ public class DepositoAguaService implements IDepositoAgua {
     }
 
     @Transactional
-    public DepositoAgua findByZonaRiego(ZonaRiego zonaRiego,String liquido) {
+    public DepositoAgua findByZonaRiego(ZonaRiego zonaRiego, String liquido) {
         try {
-            DepositoAgua tanqueNutriente= new DepositoAgua();
-            DepositoAgua tanqueNutrienteMayor= new DepositoAgua();
-            List<DepositoAgua> depositoAguas=depositoAguaService.findByZonaRiegoAndLiquido(zonaRiego,liquido);
-            for (DepositoAgua depositoNutriente:depositoAguas){
-                if(depositoAguas.size()==1){
-                    tanqueNutriente=depositoNutriente;
+            DepositoAgua tanqueNutriente = new DepositoAgua();
+            DepositoAgua tanqueNutrienteMayor = new DepositoAgua();
+            List<DepositoAgua> depositoAguas = depositoAguaService.findByZonaRiegoAndLiquido(zonaRiego, liquido);
+            for (DepositoAgua depositoNutriente : depositoAguas) {
+                if (depositoAguas.size() == 1) {
+                    tanqueNutriente = depositoNutriente;
                     break;
-                }else{
-                    if(!depositoNutriente.getEstadoTanque()){
-                        tanqueNutriente=depositoNutriente;
+                } else {
+                    if (!depositoNutriente.getEstadoTanque()) {
+                        tanqueNutriente = depositoNutriente;
                         break;
-                    }else {
-                        if(tanqueNutrienteMayor.getNivelAgua()>depositoNutriente.getNivelAgua()){
-                            tanqueNutriente=tanqueNutrienteMayor;
-                        }else{
-                            tanqueNutrienteMayor=depositoNutriente;
-                            tanqueNutriente=depositoNutriente;
+                    } else {
+                        if (tanqueNutrienteMayor.getNivelAgua() > depositoNutriente.getNivelAgua()) {
+                            tanqueNutriente = tanqueNutrienteMayor;
+                        } else {
+                            tanqueNutrienteMayor = depositoNutriente;
+                            tanqueNutriente = depositoNutriente;
                         }
                     }
                 }
@@ -117,10 +115,18 @@ public class DepositoAguaService implements IDepositoAgua {
             return new DepositoAgua();
         }
     }
+
     @Transactional
     public DepositoAgua findByDireccionMAC(String direccionMac) {
         try {
-            return depositoAguaService.findByDireccionMAC(direccionMac);
+            DepositoAgua agua = new DepositoAgua();
+            List<DepositoAgua> depositoAguas = depositoAguaService.findByDireccionMAC(direccionMac);
+            for (DepositoAgua depositoAgua : depositoAguas) {
+                if (depositoAgua.getEstado()) {
+                    agua = depositoAgua;
+                }
+            }
+            return agua;
         } catch (Exception e) {
             return new DepositoAgua(-1L, e.getMessage());
         }

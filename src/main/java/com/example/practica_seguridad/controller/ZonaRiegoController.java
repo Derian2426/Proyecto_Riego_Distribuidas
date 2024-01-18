@@ -6,6 +6,7 @@ import com.example.practica_seguridad.service.ZonaRiegoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class ZonaRiegoController {
     @Autowired
     private ZonaRiegoService zonaRiegoService;
     private ZonaRiego zonaRiego;
+    //@Autowired
+    //private SimpMessageSendingOperations messagingTemplate;
 
     @GetMapping("/zonas")
     public ResponseEntity<List<ZonaRiego>> listaZonaRiego() {
@@ -78,6 +81,7 @@ public class ZonaRiegoController {
             }
             zonaRiego = zonaRiegoService.updateZona(zonaRiegoRequest);
             if (zonaRiego != null && zonaRiego.getIdZona() > 0) {
+                //messagingTemplate.convertAndSend("/topic/zonariego", zonaRiego);
                 return new ResponseEntity<>(zonaRiego, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(new ZonaRiego(-1L, zonaRiegoRequest.getNombreZona()), HttpStatus.OK);
@@ -119,6 +123,17 @@ public class ZonaRiegoController {
                 return new ResponseEntity<>(zonaRiegoService.findByNombre(zonaRequest.getNombreZona()), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(zonaRiegoService.findAll(), HttpStatus.OK);
+        }
+    }
+    @PostMapping("/busquedaZona")
+    public ResponseEntity<ZonaRiego> busquedaZonaRiego(@RequestBody ZonaRiego zonaRequest) {
+        try {
+            if (zonaRequest == null)
+                return new ResponseEntity<>(new ZonaRiego(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(zonaRiegoService.findByZonaRiego(zonaRequest), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ZonaRiego(), HttpStatus.OK);
         }
     }
 

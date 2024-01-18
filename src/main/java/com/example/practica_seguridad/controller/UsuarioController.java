@@ -1,7 +1,7 @@
 package com.example.practica_seguridad.controller;
 
 
-import com.example.practica_seguridad.exeptions.ModelNotFoundException;
+
 import com.example.practica_seguridad.model.Usuario;
 import com.example.practica_seguridad.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,6 +5,7 @@ import com.example.practica_seguridad.service.TipoSueloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ public class TipoSueloController {
     @Autowired
     private TipoSueloService tipoSueloService;
     private TipoSuelo tipoSuelo;
+    //@Autowired
+    //private SimpMessageSendingOperations messagingTemplate;
 
     @PostMapping("/registro")
     public ResponseEntity<TipoSuelo> registraTipoSuelo(@RequestBody TipoSuelo tipoSueloRequest) {
@@ -25,6 +28,7 @@ public class TipoSueloController {
             }
             tipoSuelo = tipoSueloService.create(tipoSueloRequest);
             if (tipoSuelo != null && tipoSuelo.getIdTipoSuelo() > 0) {
+                //messagingTemplate.convertAndSend("/topic/tiposueloList", tipoSueloService.findAll());
                 return new ResponseEntity<>(tipoSuelo, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(new TipoSuelo(-1, "Valores ya anteriormente registrados."), HttpStatus.OK);
@@ -54,6 +58,7 @@ public class TipoSueloController {
             return new ResponseEntity<>(new TipoSuelo(-1, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/listatiposuelo")
     public ResponseEntity<List<TipoSuelo>> listaTipoCultivo() {
