@@ -16,7 +16,7 @@ public class ZonaRiego {
     private Long idZona;
     @Column(name = "estado")
     private Boolean estado;
-    @Column(name = "nombre")
+    @Column(name = "nombre",nullable = false, length = 50)
     private String nombreZona;
     @Column(name = "largoZona")
     private double largoZona;
@@ -28,7 +28,7 @@ public class ZonaRiego {
     private double latitudMapa;
     @Column(name = "imagen",length = 250)
     private String imagen;
-    @Column(name = "direccionMAC",length = 250, nullable = false)
+    @Column(name = "direccionMAC",length = 50, nullable = false)
     private String direccionMAC;
     @Column(name = "metodoCosecha",length = 150, nullable = false)
     private String metodoCosecha;
@@ -59,6 +59,10 @@ public class ZonaRiego {
     private Float recomendacionFosforo;
     @Column(name = "recomendacionPotasio")
     private Float recomendacionPotasio;
+    @Column(name = "aplicarNutrientes")
+    private boolean aplicarNutrientes;
+    @Column(name = "aplicarAgua")
+    private boolean aplicarAgua;
     @ManyToOne
     @JoinColumn(name = "idSistema")
     private SistemaRiego sistemaRiego;
