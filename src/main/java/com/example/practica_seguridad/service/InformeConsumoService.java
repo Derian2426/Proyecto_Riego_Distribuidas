@@ -1,5 +1,6 @@
 package com.example.practica_seguridad.service;
 
+import com.example.practica_seguridad.model.ConsumoTanque;
 import com.example.practica_seguridad.model.DepositoAgua;
 import com.example.practica_seguridad.model.InformeConsumo;
 import com.example.practica_seguridad.interfaces.IInformeConsumo;
@@ -28,7 +29,7 @@ public class InformeConsumoService implements IInformeConsumo {
     public InformeConsumo create(InformeConsumo informeConsumo) {
         try {
             informeConsumo.setFechaCosumo(new Date());
-            informeConsumo.setTiempoRiego(informeConsumo.getTiempoRiego()/60000);
+            informeConsumo.setTiempoRiego(informeConsumo.getTiempoRiego() / 60000);
             if (informeConsumo.getCantidadRestante() <= 0) {
                 if (informeConsumo.getDepositoAgua().getLiquido().equals("agua")) {
                     notificacionesService.create(new Notificacion(0L, new Date(), "Los niveles del tanque de agua estan en cero.", false, "Sensor nivel agua", informeConsumo.getDepositoAgua().getZonaRiego()));
@@ -48,6 +49,19 @@ public class InformeConsumoService implements IInformeConsumo {
                 return new InformeConsumo(-1L, 0.0);
         } catch (Exception e) {
             return new InformeConsumo(-1L, 0.0);
+        }
+    }
+
+    @Transactional
+    public Boolean crearInformeCosumo(ConsumoTanque consumoTanque) {
+        try {
+            DepositoAgua depositoAgua = depositoAguaService.findById(Math.toIntExact(consumoTanque.getIdTanque()));
+            InformeConsumo informeConsumo = new InformeConsumo(0L, consumoTanque.getFechaCosumo(), consumoTanque.getCantidadConsumo()
+                    , consumoTanque.getTiempoRiego(), consumoTanque.getCantidadRestante(), consumoTanque.getEstadoTanque(), depositoAgua);
+            create(informeConsumo);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 

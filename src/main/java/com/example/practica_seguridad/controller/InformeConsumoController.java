@@ -1,6 +1,7 @@
 package com.example.practica_seguridad.controller;
 
 import com.example.practica_seguridad.exeptions.ModelNotFoundException;
+import com.example.practica_seguridad.model.ConsumoTanque;
 import com.example.practica_seguridad.model.Cosecha;
 import com.example.practica_seguridad.model.InformeConsumo;
 import com.example.practica_seguridad.model.MonitoreoTemperatura;
@@ -37,6 +38,18 @@ public class InformeConsumoController {
                 return new ResponseEntity<>(new InformeConsumo(-1L, 0.0), HttpStatus.CONFLICT);
         } catch (Exception ex) {
             return new ResponseEntity<>(new InformeConsumo(-1L, 0.0), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("consumo")
+    public ResponseEntity<Boolean> createrInformeConsumo(@RequestBody ConsumoTanque informeConsumo) {
+        try {
+            if (informeConsumo != null)
+                return new ResponseEntity<>(informeConsumoService.crearInformeCosumo(informeConsumo), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(false, HttpStatus.CONFLICT);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

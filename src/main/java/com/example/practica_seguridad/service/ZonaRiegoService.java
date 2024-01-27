@@ -32,7 +32,7 @@ public class ZonaRiegoService implements IZonaRiegoService {
             if (zonaRiegoRepository.findByNombreZona(zonaRiego.getZonas().getNombreZona()) != null) {
                 return new ZonaRiego(-1L, "");
             }
-            if(zonaRiegoList.size()>0){
+            if (zonaRiegoList.size() > 0) {
                 for (ZonaRiego zona : zonaRiegoList) {
                     zona.setEstado(false);
                 }
@@ -128,17 +128,38 @@ public class ZonaRiegoService implements IZonaRiegoService {
     @Transactional
     public ZonaRiego findByDireccionMac(String direccionMac) {
         try {
-            ZonaRiego riego= new ZonaRiego();
+            ZonaRiego riego = new ZonaRiego();
             List<ZonaRiego> zonaRiegoList = zonaRiegoRepository.findByDireccionMAC(direccionMac);
             for (ZonaRiego zonaRiego : zonaRiegoList) {
-                if(zonaRiego.getEstado()){
-                    riego=zonaRiego;
+                if (zonaRiego.getEstado()) {
+                    riego = zonaRiego;
                 }
             }
             return riego;
         } catch (Exception e) {
             return new ZonaRiego(-1L, e.getMessage());
         }
+    }
+
+    @Transactional
+    public Boolean verificarRiegoAgua(String direccionMac) {
+        try {
+            ZonaRiego riego = findByDireccionMac(direccionMac);
+            return riego.isAplicarAgua();
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+    @Transactional
+    public Boolean verificarRiegoNutrientes(String direccionMac) {
+        try {
+            ZonaRiego riego = findByDireccionMac(direccionMac);
+            return riego.isAplicarNutrientes();
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
     @Override

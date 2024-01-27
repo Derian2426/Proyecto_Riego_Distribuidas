@@ -117,6 +117,52 @@ public class DepositoAguaService implements IDepositoAgua {
     }
 
     @Transactional
+    public double cantidadLiquido(ZonaRiego zonaRiego, String liquido) {
+        try {
+            DepositoAgua tanque = findByZonaRiego(zonaRiego, liquido);
+            return tanque.getCantidadLiquido() > 0 ? tanque.getCantidadLiquido() : 0;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    @Transactional
+    public Long findByIdTanque(ZonaRiego zonaRiego, String liquido) {
+        try {
+            DepositoAgua tanque = findByZonaRiego(zonaRiego, liquido);
+            return tanque.getIdDeposito();
+        } catch (Exception e) {
+            return -1L;
+        }
+
+    }
+
+    @Transactional
+    public Boolean habilitarMedicionTanque(int deposito) {
+        try {
+            DepositoAgua tanque = findById(deposito);
+            tanque.setMedicionLiquido(true);
+            update(tanque);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public Boolean desabilitarMedicionTanque(int deposito) {
+        try {
+            DepositoAgua tanque = findById(deposito);
+            tanque.setMedicionLiquido(false);
+            update(tanque);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    @Transactional
     public DepositoAgua findByDireccionMAC(String direccionMac) {
         try {
             DepositoAgua agua = new DepositoAgua();

@@ -125,6 +125,7 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(zonaRiegoService.findAll(), HttpStatus.OK);
         }
     }
+
     @PostMapping("/busquedaZona")
     public ResponseEntity<ZonaRiego> busquedaZonaRiego(@RequestBody ZonaRiego zonaRequest) {
         try {
@@ -155,6 +156,24 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(zonaRiego, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("verificarRiegoNutrientes/{direccionMAC}")
+    public ResponseEntity<Boolean> verificarRiegoNutrientes(@PathVariable("direccionMAC") String direccionMAC) {
+        try {
+            return new ResponseEntity<>(zonaRiegoService.verificarRiegoNutrientes(direccionMAC), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("verificarRiegoAgua/{direccionMAC}")
+    public ResponseEntity<Boolean> verificarRiegoAgua(@PathVariable("direccionMAC") String direccionMAC) {
+        try {
+            return new ResponseEntity<>(zonaRiegoService.verificarRiegoAgua(direccionMAC), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

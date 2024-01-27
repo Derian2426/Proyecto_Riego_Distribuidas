@@ -92,16 +92,17 @@ public class DepositoAguaController {
     @PostMapping("/depositoAgua")
     public ResponseEntity<DepositoAgua> listaDepositoAgua(@RequestBody ZonaRiego zonaRiego) {
         try {
-            DepositoAgua depositoAgua1=depositoAguaService.findByZonaRiego(zonaRiego,"agua");
+            DepositoAgua depositoAgua1 = depositoAguaService.findByZonaRiego(zonaRiego, "agua");
             return new ResponseEntity<>(depositoAgua1, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new DepositoAgua(), HttpStatus.OK);
         }
     }
+
     @PostMapping("/depositoNutrientes")
     public ResponseEntity<DepositoAgua> listaDepositoNutrientes(@RequestBody ZonaRiego zonaRiego) {
         try {
-            return new ResponseEntity<>(depositoAguaService.findByZonaRiego(zonaRiego,"nutrientes"), HttpStatus.OK);
+            return new ResponseEntity<>(depositoAguaService.findByZonaRiego(zonaRiego, "nutrientes"), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new DepositoAgua(), HttpStatus.OK);
         }
@@ -130,4 +131,59 @@ public class DepositoAguaController {
             return new ResponseEntity<>(new DepositoAgua(-1L, "Ocurrió un error inesperado."), HttpStatus.CONFLICT);
         }
     }
+
+    @PostMapping("/cantidaLitrosNutrientes")
+    public ResponseEntity<Double> cantidaLitrosNutrientes(@RequestBody ZonaRiego zonaRiego) {
+        try {
+            return new ResponseEntity<>(depositoAguaService.cantidadLiquido(zonaRiego, "nutrientes"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(-1.0, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/cantidaLitrosAgua")
+    public ResponseEntity<Double> cantidaLitrosAgua(@RequestBody ZonaRiego zonaRiego) {
+        try {
+            return new ResponseEntity<>(depositoAguaService.cantidadLiquido(zonaRiego, "agua"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(-1.0, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/findByIdTanqueNutrientes")
+    public ResponseEntity<Long> findByIdTanqueNutrientes(@RequestBody ZonaRiego zonaRiego) {
+        try {
+            return new ResponseEntity<>(depositoAguaService.findByIdTanque(zonaRiego, "nutrientes"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(-1L, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/findByIdTanqueAgua")
+    public ResponseEntity<Long> findByIdTanqueAgua(@RequestBody ZonaRiego zonaRiego) {
+        try {
+            return new ResponseEntity<>(depositoAguaService.findByIdTanque(zonaRiego, "agua"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(-1L, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/{habilitarMedicion}")
+    public ResponseEntity<Boolean> habilitarMedicionTanque(@PathVariable("habilitarMedicion") int deposito) {
+        try {
+            return new ResponseEntity<>(depositoAguaService.habilitarMedicionTanque(deposito), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/{desabilitarMedicion}")
+    public ResponseEntity<Boolean> desabilitarMedicion(@PathVariable("desabilitarMedicion") int deposito) {
+        try {
+            return new ResponseEntity<>(depositoAguaService.desabilitarMedicionTanque(deposito), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.CONFLICT);
+        }
+    }
+
 }
