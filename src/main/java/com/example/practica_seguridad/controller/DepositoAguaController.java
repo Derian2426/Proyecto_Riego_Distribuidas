@@ -168,7 +168,7 @@ public class DepositoAguaController {
         }
     }
 
-    @GetMapping("/{habilitarMedicion}")
+    @GetMapping("/habilitarMedicionTanque/{habilitarMedicion}")
     public ResponseEntity<Boolean> habilitarMedicionTanque(@PathVariable("habilitarMedicion") int deposito) {
         try {
             return new ResponseEntity<>(depositoAguaService.habilitarMedicionTanque(deposito), HttpStatus.OK);
@@ -177,7 +177,7 @@ public class DepositoAguaController {
         }
     }
 
-    @GetMapping("/{desabilitarMedicion}")
+    @GetMapping("/desabilitarMedicion/{desabilitarMedicion}")
     public ResponseEntity<Boolean> desabilitarMedicion(@PathVariable("desabilitarMedicion") int deposito) {
         try {
             return new ResponseEntity<>(depositoAguaService.desabilitarMedicionTanque(deposito), HttpStatus.OK);
