@@ -186,4 +186,13 @@ public class DepositoAguaController {
         }
     }
 
+    @GetMapping("/estadoMedicion/{estadoMedicion}")
+    public ResponseEntity<Boolean> estadoMedicion(@PathVariable("estadoMedicion") int deposito) {
+        try {
+            return new ResponseEntity<>(depositoAguaService.estadoMedicion(deposito), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.CONFLICT);
+        }
+    }
+
 }

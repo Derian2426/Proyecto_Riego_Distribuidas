@@ -160,6 +160,15 @@ public class DepositoAguaService implements IDepositoAgua {
             return false;
         }
     }
+    @Transactional
+    public Boolean estadoMedicion(int deposito) {
+        try {
+            DepositoAgua tanque = findById(deposito);
+            return tanque.isMedicionLiquido();
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
 
     @Transactional
