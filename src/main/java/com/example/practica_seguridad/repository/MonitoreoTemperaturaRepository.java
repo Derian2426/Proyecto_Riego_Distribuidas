@@ -89,6 +89,22 @@ public interface MonitoreoTemperaturaRepository extends JpaRepository<MonitoreoT
             " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Sábado' THEN 6" +
             " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Domingo' THEN 7 END")
     List<Object> obtenerDatosTemperaturaPorMes(@Param("mes") String mes, @Param("zonaRiego") ZonaRiego zonaRiego);
+    @Query(value = "SELECT to_char(m.fechaMedicion, 'TMDay')," +
+            " :mes , AVG(m.temperatura) , AVG(m.humedad) , m.zonaRiego.idZona" +
+            " FROM MonitoreoTemperatura m" +
+            " WHERE " +
+            " UPPER(to_char(m.fechaMedicion, 'TMMonth')) = UPPER(:mes)" +
+            " AND m.zonaRiego = :zonaRiego " +
+            " GROUP BY to_char(m.fechaMedicion, 'TMDay'), m.zonaRiego.idZona" +
+            " ORDER BY CASE" +
+            " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Monday' THEN 1" +
+            " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Tuesday' THEN 2" +
+            " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Wednesday' THEN 3" +
+            " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Thursday' THEN 4" +
+            " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Friday' THEN 5" +
+            " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Saturday' THEN 6" +
+            " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Sunday' THEN 7 END")
+    List<Object> obtenerDatosTemperaturaPorMesEnglish(@Param("mes") String mes, @Param("zonaRiego") ZonaRiego zonaRiego);
 
     /*select CASE
         WHEN y.numero_serie = 1 THEN 2

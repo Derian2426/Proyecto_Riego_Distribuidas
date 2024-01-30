@@ -129,7 +129,7 @@ public class MonitoreoTemperaturaService implements IMonitoreoTemperaturaService
             if (resultados.size() < 1) {
                 formatoMes = new SimpleDateFormat("MMMM", Locale.ENGLISH);
                 mes = formatoMes.format(fecha);
-                resultados = monitoreoTemperaturaRepository.obtenerDatosTemperaturaPorMes(mes, zonaRiego);
+                resultados = monitoreoTemperaturaRepository.obtenerDatosTemperaturaPorMesEnglish(mes, zonaRiego);
             }
             List<String> meses = new ArrayList<>();
             List<Double> medicionesHumedad = new ArrayList<>();
