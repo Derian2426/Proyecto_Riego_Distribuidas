@@ -95,7 +95,13 @@ public class MonitoreoTemperaturaService implements IMonitoreoTemperaturaService
         try {
             SimpleDateFormat formatoMes = new SimpleDateFormat("MMMM", new Locale("es", "ES"));
             String mes = formatoMes.format(fecha);
-            return monitoreoTemperaturaRepository.findDistinctFechaMedicionByZonaRiego(mes, zonaRiego);
+            List<Date> fechasMeses = monitoreoTemperaturaRepository.findDistinctFechaMedicionByZonaRiego(mes, zonaRiego);
+            if (fechasMeses.size() < 1) {
+                formatoMes = new SimpleDateFormat("MMMM", Locale.ENGLISH);
+                mes = formatoMes.format(fecha);
+                fechasMeses = monitoreoTemperaturaRepository.findDistinctFechaMedicionByZonaRiego(mes, zonaRiego);
+            }
+            return fechasMeses;
         } catch (Exception e) {
             return new ArrayList<>();
         }
