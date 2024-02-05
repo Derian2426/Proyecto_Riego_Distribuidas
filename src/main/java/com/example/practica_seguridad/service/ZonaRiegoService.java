@@ -49,6 +49,27 @@ public class ZonaRiegoService implements IZonaRiegoService {
             return new ZonaRiego(-1L, e.getMessage());
         }
     }
+    @Transactional
+    public ZonaRiego createZonaRiego(ZonaRiego zonaRiego) {
+        ZonaRiego zonaRiegoRegistro;
+        List<ZonaRiego> zonaRiegoList = zonaRiegoRepository.findByDireccionMAC(zonaRiego.getDireccionMAC());
+        try {
+            if (zonaRiegoRepository.findByNombreZona(zonaRiego.getNombreZona()) != null) {
+                return new ZonaRiego(-1L, "");
+            }
+            if (zonaRiegoList.size() > 0) {
+                for (ZonaRiego zona : zonaRiegoList) {
+                    zona.setEstado(false);
+                }
+                zonaRiegoRepository.saveAll(zonaRiegoList);
+            }
+            zonaRiego.setEstado(true);
+            zonaRiegoRegistro = zonaRiegoRepository.save(zonaRiego);
+            return zonaRiegoRegistro;
+        } catch (Exception e) {
+            return new ZonaRiego(-1L, e.getMessage());
+        }
+    }
 
     @Override
     @Transactional

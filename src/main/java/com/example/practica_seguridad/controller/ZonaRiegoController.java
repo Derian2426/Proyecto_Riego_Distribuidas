@@ -55,6 +55,22 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("/registrozona")
+    public ResponseEntity<ZonaRiego> createZonaRiego(@RequestBody ZonaRiego zonaRiegoRequest) {
+        try {
+            if (zonaRiegoRequest == null) {
+                return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error. Vuelva a intentarlo luego."), HttpStatus.BAD_REQUEST);
+            }
+            zonaRiego = zonaRiegoService.createZonaRiego(zonaRiegoRequest);
+            if (zonaRiego != null && zonaRiego.getIdZona() > 0) {
+                return new ResponseEntity<>(zonaRiego, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ZonaRiego(-1L, zonaRiegoRequest.getNombreZona()), HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping("/actualizar")
     public ResponseEntity<ZonaRiego> updateZonaRiego(@RequestBody DatosSensoresZonas zonaRiegoRequest) {
