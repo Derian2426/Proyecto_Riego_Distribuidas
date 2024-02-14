@@ -20,7 +20,7 @@ public class SensorService implements ISensorService {
     @Transactional
     public Sensor create(Sensor sensor) {
         try {
-            if (sensorRepository.findByNombre(sensor.getNombre()) != null) {
+            if (sensorRepository.findByNombreContainingIgnoreCase(sensor.getNombre()) != null) {
                 return new Sensor(-1L, "", "");
             }
             return sensorRepository.save(sensor);
@@ -33,7 +33,7 @@ public class SensorService implements ISensorService {
     @Transactional
     public Sensor update(Sensor sensor) {
         try {
-            Sensor existingSensor = sensorRepository.findByNombre(sensor.getNombre());
+            Sensor existingSensor = sensorRepository.findByNombreIgnoreCase(sensor.getNombre());
             if (existingSensor != null && !existingSensor.getIdSensor().equals(sensor.getIdSensor())) {
                 return new Sensor(-1L, "", "");
             }

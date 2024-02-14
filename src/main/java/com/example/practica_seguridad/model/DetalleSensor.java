@@ -18,4 +18,14 @@ public class DetalleSensor {
     @ManyToOne
     @JoinColumn(name = "idZona")
     private ZonaRiego zona;
+
+    public DetalleSensor(Integer idsSensorDetalle, Sensor sensor, ZonaRiego zona) {
+        this.idsSensorDetalle = idsSensorDetalle;
+        this.sensor = sensor;
+        this.zona = zona;
+    }
+
+    public DetalleSensor() {
+
+    }
 }

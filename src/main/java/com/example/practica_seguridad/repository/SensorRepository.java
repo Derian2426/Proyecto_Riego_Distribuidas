@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface SensorRepository extends JpaRepository<Sensor, Integer> {
-    Sensor findByNombre(String tipoCultivo);
+    Sensor findByNombreIgnoreCase(String tipoCultivo);
 
     List<Sensor> findByNombreContainingIgnoreCase(String tipoCultivo);
     @Query("Select e from Sensor e where e.idSensor In :detalleSensor")
