@@ -174,6 +174,14 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("idzona/{direccionMAC}")
+    public ResponseEntity<Integer> buscarDireccionMacId(@PathVariable("direccionMAC") String direccionMAC) {
+        try {
+            return new ResponseEntity<>(zonaRiegoService.findByDireccionMacId(direccionMAC), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(-1, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("verificarRiegoNutrientes/{direccionMAC}")
     public ResponseEntity<Boolean> verificarRiegoNutrientes(@PathVariable("direccionMAC") String direccionMAC) {

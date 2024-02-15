@@ -161,6 +161,21 @@ public class ZonaRiegoService implements IZonaRiegoService {
             return new ZonaRiego(-1L, e.getMessage());
         }
     }
+    @Transactional
+    public Integer findByDireccionMacId(String direccionMac) {
+        try {
+            ZonaRiego riego = new ZonaRiego();
+            List<ZonaRiego> zonaRiegoList = zonaRiegoRepository.findByDireccionMAC(direccionMac);
+            for (ZonaRiego zonaRiego : zonaRiegoList) {
+                if (zonaRiego.getEstado()) {
+                    riego = zonaRiego;
+                }
+            }
+            return Math.toIntExact(riego.getIdZona());
+        } catch (Exception e) {
+            return -1;
+        }
+    }
 
     @Transactional
     public Boolean verificarRiegoAgua(String direccionMac) {
