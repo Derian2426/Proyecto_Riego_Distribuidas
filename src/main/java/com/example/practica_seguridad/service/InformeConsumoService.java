@@ -42,10 +42,7 @@ public class InformeConsumoService implements IInformeConsumo {
             depositoAgua.setEstadoTanque(false);
             depositoAgua.setMedicionLiquido(false);
             depositoAguaService.update(depositoAgua);
-            if (informeConsumo.getCantidadConsumo() > 0)
-                return informeConsumoRepository.save(informeConsumo);
-            else
-                return new InformeConsumo(-1L, 0.0);
+            return informeConsumoRepository.save(informeConsumo);
         } catch (Exception e) {
             return new InformeConsumo(-1L, 0.0);
         }
