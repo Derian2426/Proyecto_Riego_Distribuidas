@@ -102,10 +102,9 @@ public class ZonaRiegoService implements IZonaRiegoService {
         try {
             ZonaRiego existingZonaRiego = zonaRiegoRepository.findByIdZona(Math.toIntExact(zonaRiego.getIdZona()));
             if (existingZonaRiego != null) {
-                zonaRiego.setAplicarAgua(false);
                 registarMonitoreoSuelo(zonaRiego);
                 registarMonitoreoTemperatura(zonaRiego);
-                actualizarZonaRiego(zonaRiego);
+                actualizarZonaRiegoConsumo(zonaRiego);
                 ConsumoTanque consumoTanque = new ConsumoTanque(-1L, monitoreoSueloRepository.getCurrentDatabaseDateTimeMinusFiveHours(),
                         (zonaRiego.getRecomendacionTemaperatura().doubleValue() - zonaRiego.getRecomendacionHumedadSuelo().doubleValue()), zonaRiego.getRecomendacionHumedadAmbiente().doubleValue(),
                         zonaRiego.getRecomendacionHumedadSuelo().doubleValue(), true, (long) zonaRiego.getRecomendacionNitrogeno().intValue());
@@ -183,6 +182,22 @@ public class ZonaRiegoService implements IZonaRiegoService {
             return 0;
         } catch (Exception e) {
             return 0;
+        }
+    }
+    @Transactional
+    void actualizarZonaRiegoConsumo(ZonaRiego zonaRiego) {
+        try {
+            ZonaRiego existingZonaRiego = zonaRiegoRepository.findByIdZona(Math.toIntExact(zonaRiego.getIdZona()));
+            existingZonaRiego.setUltimaFosforo(zonaRiego.getUltimaFosforo());
+            existingZonaRiego.setUltimaPotasio(zonaRiego.getUltimaPotasio());
+            existingZonaRiego.setUltimaNitrogeno(zonaRiego.getUltimaNitrogeno());
+            existingZonaRiego.setUltimaTemaperatura(zonaRiego.getUltimaTemaperatura());
+            existingZonaRiego.setUltimaHumedadSuelo(zonaRiego.getUltimaHumedadSuelo());
+            existingZonaRiego.setUltimaHumedadAmbiente(zonaRiego.getUltimaHumedadAmbiente());
+            existingZonaRiego.setAplicarAgua(false);
+            updateZona(existingZonaRiego);
+        } catch (Exception e) {
+            throw new RuntimeException();
         }
     }
 
