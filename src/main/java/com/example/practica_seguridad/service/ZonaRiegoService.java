@@ -2,9 +2,7 @@ package com.example.practica_seguridad.service;
 
 import com.example.practica_seguridad.model.*;
 import com.example.practica_seguridad.interfaces.IZonaRiegoService;
-import com.example.practica_seguridad.repository.DetalleSensorRepository;
-import com.example.practica_seguridad.repository.SensorRepository;
-import com.example.practica_seguridad.repository.ZonaRiegoRepository;
+import com.example.practica_seguridad.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +20,14 @@ public class ZonaRiegoService implements IZonaRiegoService {
     private DetalleSensorRepository detalleSensorRepository;
     @Autowired
     private SensorRepository sensorRepository;
+    @Autowired
+    private MonitoreoSueloRepository monitoreoSueloRepository;
+    @Autowired
+    private MonitoreoTemperaturaRepository monitoreoTemperaturaRepository;
+    @Autowired
+    private DepositoAguaService depositoAguaService;
+    @Autowired
+    private InformeConsumoService informeConsumoService;
 
     @Override
     @Transactional
@@ -49,6 +55,7 @@ public class ZonaRiegoService implements IZonaRiegoService {
             return new ZonaRiego(-1L, e.getMessage());
         }
     }
+
     @Transactional
     public ZonaRiego createZonaRiego(ZonaRiego zonaRiego) {
         ZonaRiego zonaRiegoRegistro;
@@ -87,6 +94,144 @@ public class ZonaRiegoService implements IZonaRiegoService {
             return zonaRiegoRepository.save(zonaRiego.getZonas());
         } catch (Exception e) {
             return new ZonaRiego(-1L, e.getMessage());
+        }
+    }
+
+    @Transactional
+    public Integer registrarCantidadAguaConsumida(ZonaRiego zonaRiego) {
+        try {
+            ZonaRiego existingZonaRiego = zonaRiegoRepository.findByIdZona(Math.toIntExact(zonaRiego.getIdZona()));
+            if (existingZonaRiego != null) {
+                registarMonitoreoSuelo(zonaRiego);
+                registarMonitoreoTemperatura(zonaRiego);
+                actualizarZonaRiego(zonaRiego);
+                ConsumoTanque consumoTanque = new ConsumoTanque(-1L, monitoreoSueloRepository.getCurrentDatabaseDateTimeMinusFiveHours(),
+                        (zonaRiego.getRecomendacionTemaperatura().doubleValue() - zonaRiego.getRecomendacionHumedadSuelo().doubleValue()), zonaRiego.getRecomendacionHumedadAmbiente().doubleValue(),
+                        zonaRiego.getRecomendacionHumedadSuelo().doubleValue(), true, (long) zonaRiego.getRecomendacionNitrogeno().intValue());
+                informeConsumoService.crearInformeCosumo(consumoTanque);
+            }
+            return 1;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+
+    @Transactional
+    public Integer tomarDesiscionRiegoAgua(ZonaRiego zonaRiego) {
+        try {
+            int establecerTiempoRiego;
+            ZonaRiego existingZonaRiego = zonaRiegoRepository.findByIdZona(Math.toIntExact(zonaRiego.getIdZona()));
+            if (existingZonaRiego != null) {
+                registarMonitoreoSuelo(zonaRiego);
+                registarMonitoreoTemperatura(zonaRiego);
+                actualizarZonaRiego(zonaRiego);
+                int idTanqueAgua = Math.toIntExact(depositoAguaService.findByIdTanque(zonaRiego, "agua"));
+                DepositoAgua agua = depositoAguaService.findById(idTanqueAgua);
+                if (agua.getCantidadLiquido() <= 0.9) {
+                    establecerTiempoRiego = 0;
+                } else if (agua.getCantidadLiquido() > 0.9 && agua.getCantidadLiquido() <= 2) {
+                    establecerTiempoRiego = 60000;
+                } else if (agua.getCantidadLiquido() > 2 && agua.getCantidadLiquido() <= 3) {
+                    establecerTiempoRiego = 90000;
+                } else {
+                    establecerTiempoRiego = 120000;
+                }
+                if ((zonaRiego.getUltimaHumedadSuelo() < zonaRiego.getRecomendacionHumedadSuelo())&&
+                        (zonaRiego.getUltimaTemaperatura()<=zonaRiego.getRecomendacionTemaperatura()&&
+                                zonaRiego.getUltimaHumedadAmbiente()<=zonaRiego.getRecomendacionHumedadAmbiente())) {
+                    return establecerTiempoRiego;
+                }else{
+                    return 0;
+                }
+            }
+            return 0;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    @Transactional
+    public Integer tomarDesiscionRiegoNutriente(ZonaRiego zonaRiego) {
+        try {
+            int establecerTiempoRiego;
+            ZonaRiego existingZonaRiego = zonaRiegoRepository.findByIdZona(Math.toIntExact(zonaRiego.getIdZona()));
+            if (existingZonaRiego != null) {
+                int idTanqueNutriente = Math.toIntExact(depositoAguaService.findByIdTanque(zonaRiego, "nutrientes"));
+                DepositoAgua nutrientes = depositoAguaService.findById(idTanqueNutriente);
+                registarMonitoreoSuelo(zonaRiego);
+                registarMonitoreoTemperatura(zonaRiego);
+                actualizarZonaRiego(zonaRiego);
+                if (nutrientes.getCantidadLiquido() <= 0.9) {
+                    establecerTiempoRiego = 0;
+                } else if (nutrientes.getCantidadLiquido() > 0.9 && nutrientes.getCantidadLiquido() <= 2) {
+                    establecerTiempoRiego = 60000;
+                } else if (nutrientes.getCantidadLiquido() > 2 && nutrientes.getCantidadLiquido() <= 3) {
+                    establecerTiempoRiego = 90000;
+                } else {
+                    establecerTiempoRiego = 120000;
+                }
+                if (zonaRiego.getUltimaFosforo() < zonaRiego.getRecomendacionFosforo() ||
+                        zonaRiego.getUltimaPotasio() < zonaRiego.getRecomendacionPotasio() ||
+                        zonaRiego.getUltimaNitrogeno() < zonaRiego.getRecomendacionNitrogeno()) {
+                    return establecerTiempoRiego;
+                }else{
+                    return 0;
+                }
+            }
+            return 0;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    @Transactional
+    void actualizarZonaRiego(ZonaRiego zonaRiego) {
+        try {
+            ZonaRiego existingZonaRiego = zonaRiegoRepository.findByIdZona(Math.toIntExact(zonaRiego.getIdZona()));
+            existingZonaRiego.setUltimaFosforo(zonaRiego.getUltimaFosforo());
+            existingZonaRiego.setUltimaPotasio(zonaRiego.getUltimaPotasio());
+            existingZonaRiego.setUltimaNitrogeno(zonaRiego.getUltimaNitrogeno());
+            existingZonaRiego.setUltimaTemaperatura(zonaRiego.getUltimaTemaperatura());
+            existingZonaRiego.setUltimaHumedadSuelo(zonaRiego.getUltimaHumedadSuelo());
+            existingZonaRiego.setUltimaHumedadAmbiente(zonaRiego.getUltimaHumedadAmbiente());
+            updateZona(existingZonaRiego);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Transactional
+    void registarMonitoreoTemperatura(ZonaRiego zonaRiego) {
+        try {
+            MonitoreoTemperatura monitoreoTemperaturaAnterior = monitoreoTemperaturaRepository.findTopByZonaRiegoOrderByIdTemperaturaDesc(zonaRiego);
+            MonitoreoTemperatura monitoreoTemperatura = new MonitoreoTemperatura(-1L, monitoreoSueloRepository.getCurrentDatabaseDateTimeMinusFiveHours(),
+                    zonaRiego.getUltimaTemaperatura(),
+                    zonaRiego.getUltimaHumedadAmbiente(), zonaRiego);
+            if (monitoreoTemperaturaAnterior.getTemperatura() != monitoreoTemperatura.getTemperatura() ||
+                    monitoreoTemperaturaAnterior.getHumedad() != monitoreoTemperatura.getHumedad()) {
+                monitoreoTemperaturaRepository.save(monitoreoTemperatura);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Transactional
+    void registarMonitoreoSuelo(ZonaRiego zonaRiego) {
+        try {
+            MonitoreoSuelo monitoreoSueloAnterior = monitoreoSueloRepository.findTopByZonaRiegoOrderByIdSueloDesc(zonaRiego);
+            MonitoreoSuelo monitoreoSuelo = new MonitoreoSuelo(-1L, monitoreoSueloRepository.getCurrentDatabaseDateTimeMinusFiveHours(), zonaRiego.getUltimaHumedadSuelo(),
+                    zonaRiego.getUltimaNitrogeno(), zonaRiego.getUltimaFosforo(), zonaRiego.getUltimaPotasio(),
+                    "mg/kg", zonaRiego);
+            if (monitoreoSueloAnterior.getHumedad() != monitoreoSuelo.getHumedad() ||
+                    monitoreoSueloAnterior.getFosforo() != monitoreoSuelo.getFosforo() ||
+                    monitoreoSueloAnterior.getNitrogeno() != monitoreoSuelo.getNitrogeno() ||
+                    monitoreoSueloAnterior.getPotasio() != monitoreoSuelo.getPotasio()) {
+                monitoreoSueloRepository.save(monitoreoSuelo);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException();
         }
     }
 
@@ -161,6 +306,7 @@ public class ZonaRiegoService implements IZonaRiegoService {
             return new ZonaRiego(-1L, e.getMessage());
         }
     }
+
     @Transactional
     public Integer findByDireccionMacId(String direccionMac) {
         try {
@@ -187,6 +333,7 @@ public class ZonaRiegoService implements IZonaRiegoService {
         }
 
     }
+
     @Transactional
     public Boolean verificarRiegoNutrientes(String direccionMac) {
         try {

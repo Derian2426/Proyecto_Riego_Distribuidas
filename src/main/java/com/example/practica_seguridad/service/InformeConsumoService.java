@@ -6,6 +6,7 @@ import com.example.practica_seguridad.model.InformeConsumo;
 import com.example.practica_seguridad.interfaces.IInformeConsumo;
 import com.example.practica_seguridad.model.Notificacion;
 import com.example.practica_seguridad.repository.InformeConsumoRepository;
+import com.example.practica_seguridad.repository.MonitoreoSueloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,6 @@ public class InformeConsumoService implements IInformeConsumo {
     @Transactional
     public InformeConsumo create(InformeConsumo informeConsumo) {
         try {
-            informeConsumo.setFechaCosumo(new Date());
-            informeConsumo.setTiempoRiego(informeConsumo.getTiempoRiego() / 60000);
             if (informeConsumo.getCantidadRestante() <= 0) {
                 if (informeConsumo.getDepositoAgua().getLiquido().equals("agua")) {
                     notificacionesService.create(new Notificacion(0L, new Date(), "Los niveles del tanque de agua estan en cero.", false, "Sensor nivel agua", informeConsumo.getDepositoAgua().getZonaRiego()));

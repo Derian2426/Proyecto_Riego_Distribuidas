@@ -106,6 +106,40 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("/monitoreonutrientesriego")
+    public ResponseEntity<Integer> decicionRiegoNutrientes(@RequestBody ZonaRiego zonaRiegoRequest) {
+        try {
+            if (zonaRiegoRequest == null) {
+                return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(zonaRiegoService.tomarDesiscionRiegoNutriente(zonaRiegoRequest), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(0, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/monitoreoaguariego")
+    public ResponseEntity<Integer> decicionRiegoAgua(@RequestBody ZonaRiego zonaRiegoRequest) {
+        try {
+            if (zonaRiegoRequest == null) {
+                return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(zonaRiegoService.tomarDesiscionRiegoAgua(zonaRiegoRequest), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(0, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/registrarConsumo")
+    public ResponseEntity<Integer> registrarConsumo(@RequestBody ZonaRiego zonaRiegoRequest) {
+        try {
+            if (zonaRiegoRequest == null) {
+                return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(zonaRiegoService.registrarCantidadAguaConsumida(zonaRiegoRequest), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(0, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ZonaRiego> delete(@PathVariable("id") Integer idzonaRiego) throws Exception {

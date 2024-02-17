@@ -1,5 +1,6 @@
 package com.example.practica_seguridad.repository;
 
+import com.example.practica_seguridad.model.MonitoreoSuelo;
 import com.example.practica_seguridad.model.MonitoreoTemperatura;
 import com.example.practica_seguridad.model.ZonaRiego;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,8 +13,8 @@ import java.util.Optional;
 
 public interface MonitoreoTemperaturaRepository extends JpaRepository<MonitoreoTemperatura, Integer> {
     Optional<List<MonitoreoTemperatura>> findByZonaRiego(ZonaRiego zonaRiego);
-
     List<MonitoreoTemperatura> findByZonaRiegoAndFechaMedicion(ZonaRiego zonaRiego, Date fechaMedicion);
+    MonitoreoTemperatura findTopByZonaRiegoOrderByIdTemperaturaDesc(ZonaRiego zonaRiego);
 
     @Query(value = "SELECT DISTINCT( Cast(m.fechaMedicion as date)) FROM MonitoreoTemperatura m " +
             "WHERE m.zonaRiego = :zonaRiego" +
