@@ -102,6 +102,7 @@ public class ZonaRiegoService implements IZonaRiegoService {
         try {
             ZonaRiego existingZonaRiego = zonaRiegoRepository.findByIdZona(Math.toIntExact(zonaRiego.getIdZona()));
             if (existingZonaRiego != null) {
+                zonaRiego.setAplicarAgua(false);
                 registarMonitoreoSuelo(zonaRiego);
                 registarMonitoreoTemperatura(zonaRiego);
                 actualizarZonaRiego(zonaRiego);
