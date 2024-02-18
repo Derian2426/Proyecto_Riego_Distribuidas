@@ -104,7 +104,7 @@ public class ZonaRiegoService implements IZonaRiegoService {
             if (existingZonaRiego != null) {
                 registarMonitoreoSuelo(zonaRiego);
                 registarMonitoreoTemperatura(zonaRiego);
-                actualizarZonaRiegoConsumo(zonaRiego);
+                actualizarZonaRiegoConsumo(zonaRiego, zonaRiego.getRecomendacionNitrogeno().intValue());
                 ConsumoTanque consumoTanque = new ConsumoTanque(-1L, monitoreoSueloRepository.getCurrentDatabaseDateTimeMinusFiveHours(),
                         (zonaRiego.getRecomendacionTemaperatura().doubleValue() - zonaRiego.getRecomendacionHumedadSuelo().doubleValue()), zonaRiego.getRecomendacionHumedadAmbiente().doubleValue(),
                         zonaRiego.getRecomendacionHumedadSuelo().doubleValue(), true, (long) zonaRiego.getRecomendacionNitrogeno().intValue());
@@ -116,6 +116,27 @@ public class ZonaRiegoService implements IZonaRiegoService {
         }
     }
 
+    @Transactional
+    void actualizarZonaRiegoConsumo(ZonaRiego zonaRiego, int idTanque) {
+        try {
+            DepositoAgua deposito = depositoAguaService.findById(Math.toIntExact(idTanque));
+            ZonaRiego existingZonaRiego = zonaRiegoRepository.findByIdZona(Math.toIntExact(zonaRiego.getIdZona()));
+            existingZonaRiego.setUltimaFosforo(zonaRiego.getUltimaFosforo());
+            existingZonaRiego.setUltimaPotasio(zonaRiego.getUltimaPotasio());
+            existingZonaRiego.setUltimaNitrogeno(zonaRiego.getUltimaNitrogeno());
+            existingZonaRiego.setUltimaTemaperatura(zonaRiego.getUltimaTemaperatura());
+            existingZonaRiego.setUltimaHumedadSuelo(zonaRiego.getUltimaHumedadSuelo());
+            existingZonaRiego.setUltimaHumedadAmbiente(zonaRiego.getUltimaHumedadAmbiente());
+            if (Objects.equals(deposito.getLiquido(), "agua")) {
+                existingZonaRiego.setAplicarAgua(false);
+            } else {
+                existingZonaRiego.setAplicarNutrientes(false);
+            }
+            updateZona(existingZonaRiego);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
 
     @Transactional
     public Integer tomarDesiscionRiegoAgua(ZonaRiego zonaRiego) {
@@ -184,23 +205,6 @@ public class ZonaRiegoService implements IZonaRiegoService {
             return 0;
         } catch (Exception e) {
             return 0;
-        }
-    }
-
-    @Transactional
-    void actualizarZonaRiegoConsumo(ZonaRiego zonaRiego) {
-        try {
-            ZonaRiego existingZonaRiego = zonaRiegoRepository.findByIdZona(Math.toIntExact(zonaRiego.getIdZona()));
-            existingZonaRiego.setUltimaFosforo(zonaRiego.getUltimaFosforo());
-            existingZonaRiego.setUltimaPotasio(zonaRiego.getUltimaPotasio());
-            existingZonaRiego.setUltimaNitrogeno(zonaRiego.getUltimaNitrogeno());
-            existingZonaRiego.setUltimaTemaperatura(zonaRiego.getUltimaTemaperatura());
-            existingZonaRiego.setUltimaHumedadSuelo(zonaRiego.getUltimaHumedadSuelo());
-            existingZonaRiego.setUltimaHumedadAmbiente(zonaRiego.getUltimaHumedadAmbiente());
-            existingZonaRiego.setAplicarAgua(false);
-            updateZona(existingZonaRiego);
-        } catch (Exception e) {
-            throw new RuntimeException();
         }
     }
 
