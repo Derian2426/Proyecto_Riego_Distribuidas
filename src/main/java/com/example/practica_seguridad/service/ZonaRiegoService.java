@@ -194,8 +194,8 @@ public class ZonaRiegoService implements IZonaRiegoService {
                 } else {
                     establecerTiempoRiego = 90000;
                 }
-                if (zonaRiego.getUltimaFosforo() < existingZonaRiego.getRecomendacionFosforo() ||
-                        zonaRiego.getUltimaPotasio() < existingZonaRiego.getRecomendacionPotasio() ||
+                if (zonaRiego.getUltimaFosforo() < existingZonaRiego.getRecomendacionFosforo() &&
+                        zonaRiego.getUltimaPotasio() < existingZonaRiego.getRecomendacionPotasio() &&
                         zonaRiego.getUltimaNitrogeno() < existingZonaRiego.getRecomendacionNitrogeno()) {
                     return establecerTiempoRiego;
                 } else {
