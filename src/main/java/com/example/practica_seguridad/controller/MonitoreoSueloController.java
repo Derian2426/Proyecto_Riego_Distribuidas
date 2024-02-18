@@ -1,8 +1,6 @@
 package com.example.practica_seguridad.controller;
 
-import com.example.practica_seguridad.model.FiltroMonitoreoSuelo;
-import com.example.practica_seguridad.model.MonitoreoSuelo;
-import com.example.practica_seguridad.model.ZonaRiego;
+import com.example.practica_seguridad.model.*;
 import com.example.practica_seguridad.service.MonitoreoSueloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -82,6 +81,75 @@ public class MonitoreoSueloController {
                 return new ResponseEntity<>(monitoreoSueloService.findByFecha(filtroMonitoreoSuelo.getZonaRiego(), filtroMonitoreoSuelo.getFechaMedicion()), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
+    }
+
+
+    @PostMapping("/fechasmediciones")
+    public ResponseEntity<List<Date>> fechasSuelo(@RequestBody FiltroMonitoreoSuelo filtroMonitoreoSuelo) {
+        try {
+            if (filtroMonitoreoSuelo == null)
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(monitoreoSueloService.findByFechas(filtroMonitoreoSuelo.getZonaRiego(), filtroMonitoreoSuelo.getFechaMedicion()), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
+    }
+    @PostMapping("/mesesmediciones")
+    public ResponseEntity<List<String>> mesesSuelo(@RequestBody FiltroMonitoreoSuelo filtroMonitoreoSuelo) {
+        try {
+            if (filtroMonitoreoSuelo == null)
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(monitoreoSueloService.findByMeses(filtroMonitoreoSuelo.getZonaRiego(), filtroMonitoreoSuelo.getFechaMedicion()), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
+    }
+    @PostMapping("/aniosmediciones")
+    public ResponseEntity<List<Integer>> aniosSuelo(@RequestBody ZonaRiego zonaRiego) {
+        try {
+            if (zonaRiego == null)
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(monitoreoSueloService.findByAnio(zonaRiego), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/busquedasuelohora")
+    public ResponseEntity<ChartDataSuelo> busquedaSueloHora(@RequestBody FiltroMonitoreoSuelo filtroMonitoreoSuelo) {
+        try {
+            if (filtroMonitoreoSuelo == null)
+                return new ResponseEntity<>(new ChartDataSuelo(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(monitoreoSueloService.obtenerDatosSueloPorFecha(filtroMonitoreoSuelo.getZonaRiego(), filtroMonitoreoSuelo.getFechaMedicion()), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ChartDataSuelo(), HttpStatus.OK);
+        }
+    }
+    @PostMapping("/busquedasuelomes")
+    public ResponseEntity<ChartDataSuelo> busquedaTemperaturaMes(@RequestBody FiltroMonitoreoSuelo filtroMonitoreoSuelo) {
+        try {
+            if (filtroMonitoreoSuelo == null)
+                return new ResponseEntity<>(new ChartDataSuelo(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(monitoreoSueloService.obtenerDatosSueloPorMeses(filtroMonitoreoSuelo.getZonaRiego(), filtroMonitoreoSuelo.getFechaMedicion()), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ChartDataSuelo(), HttpStatus.OK);
+        }
+    }
+    @PostMapping("/busquedasueloanio")
+    public ResponseEntity<ChartDataSuelo> obtenerDatosTemperaturaPorAnio(@RequestBody FiltroMonitoreoSuelo filtroMonitoreoSuelo) {
+        try {
+            if (filtroMonitoreoSuelo == null)
+                return new ResponseEntity<>(new ChartDataSuelo(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(monitoreoSueloService.obtenerDatosSueloPorAnio(filtroMonitoreoSuelo.getZonaRiego(), filtroMonitoreoSuelo.getFechaMedicion()), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ChartDataSuelo(), HttpStatus.OK);
         }
     }
 }

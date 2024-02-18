@@ -33,17 +33,6 @@ public interface MonitoreoTemperaturaRepository extends JpaRepository<MonitoreoT
             " ORDER BY EXTRACT(YEAR FROM m.fechaMedicion)")
     List<Integer> findAnioMedicionByZonaRiego(@Param("zonaRiego") ZonaRiego zonaRiego);
 
-    @Query(value = "SELECT EXTRACT(HOUR FROM m.fechaMedicion) ," +
-            " :fecha , AVG(m.temperatura) , AVG(m.humedad) , m.zonaRiego.idZona" +
-            " FROM MonitoreoTemperatura m" +
-            " WHERE " +
-            " CAST(m.fechaMedicion AS date) = :fecha " +
-            " AND EXTRACT(HOUR FROM m.fechaMedicion) IN (8, 11, 14, 17, 20, 23, 2, 5)" +
-            " AND m.zonaRiego = :zonaRiego " +
-            " GROUP BY EXTRACT(HOUR FROM m.fechaMedicion), m.zonaRiego.idZona" +
-            " ORDER BY EXTRACT(HOUR FROM m.fechaMedicion)")
-    List<Object> obtenerDatosTemperaturaPorFechaYHora(@Param("fecha") Date fecha, @Param("zonaRiego") ZonaRiego zonaRiego);
-
     @Query(value = "SELECT CASE WHEN X.fecha = 1 THEN 2 " +
             "        WHEN X.fecha = 2 THEN 5 " +
             "        WHEN X.fecha = 3 THEN 8 " +
@@ -80,6 +69,7 @@ public interface MonitoreoTemperaturaRepository extends JpaRepository<MonitoreoT
             " WHERE " +
             " UPPER(to_char(m.fechaMedicion, 'TMMonth')) = UPPER(:mes)" +
             " AND m.zonaRiego = :zonaRiego " +
+            " AND EXTRACT(YEAR FROM m.fechaMedicion)=:anio " +
             " GROUP BY to_char(m.fechaMedicion, 'TMDay'), m.zonaRiego.idZona" +
             " ORDER BY CASE" +
             " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Lunes' THEN 1" +
@@ -89,13 +79,14 @@ public interface MonitoreoTemperaturaRepository extends JpaRepository<MonitoreoT
             " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Viernes' THEN 5" +
             " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Sábado' THEN 6" +
             " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Domingo' THEN 7 END")
-    List<Object> obtenerDatosTemperaturaPorMes(@Param("mes") String mes, @Param("zonaRiego") ZonaRiego zonaRiego);
+    List<Object> obtenerDatosTemperaturaPorMes(@Param("mes") String mes,@Param("anio") int anio, @Param("zonaRiego") ZonaRiego zonaRiego);
     @Query(value = "SELECT to_char(m.fechaMedicion, 'TMDay')," +
             " :mes , AVG(m.temperatura) , AVG(m.humedad) , m.zonaRiego.idZona" +
             " FROM MonitoreoTemperatura m" +
             " WHERE " +
             " UPPER(to_char(m.fechaMedicion, 'TMMonth')) = UPPER(:mes)" +
             " AND m.zonaRiego = :zonaRiego " +
+            " AND EXTRACT(YEAR FROM m.fechaMedicion)=:anio " +
             " GROUP BY to_char(m.fechaMedicion, 'TMDay'), m.zonaRiego.idZona" +
             " ORDER BY CASE" +
             " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Monday' THEN 1" +
@@ -105,30 +96,7 @@ public interface MonitoreoTemperaturaRepository extends JpaRepository<MonitoreoT
             " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Friday' THEN 5" +
             " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Saturday' THEN 6" +
             " WHEN to_char(m.fechaMedicion, 'TMDay') = 'Sunday' THEN 7 END")
-    List<Object> obtenerDatosTemperaturaPorMesEnglish(@Param("mes") String mes, @Param("zonaRiego") ZonaRiego zonaRiego);
+    List<Object> obtenerDatosTemperaturaPorMesEnglish(@Param("mes") String mes,@Param("anio") int anio, @Param("zonaRiego") ZonaRiego zonaRiego);
 
-    /*select CASE
-        WHEN y.numero_serie = 1 THEN 2
-        WHEN y.numero_serie = 2 THEN 5
-        WHEN y.numero_serie = 3 THEN 8
-		WHEN y.numero_serie = 4 THEN 11
-		WHEN y.numero_serie = 5 THEN 14
-		WHEN y.numero_serie = 6 THEN 17
-		WHEN y.numero_serie = 7 THEN 20
-		WHEN y.numero_serie = 8 THEN 23
-    END AS nuevo_numero_serie,avg(y.promedio_temperatura),avg(y.promedio_temperatura) from (
-SELECT CEIL(ROW_NUMBER() OVER (ORDER BY subquery.hora) / 3.0) AS numero_serie, subquery.hora as hora,
-    AVG(temperatura) AS promedio_temperatura,
-    AVG(humedad) AS promedio_humedad
-FROM (
-    SELECT EXTRACT(HOUR FROM m.fecha_medicion) as hora,m.temperatura, m.humedad
-    FROM monitoreo_temperatura m
-    WHERE CAST(m.fecha_medicion AS DATE) = '2023-11-17 01:15:00'
-) AS subquery
-GROUP BY
-    hora
-ORDER BY
-    hora ) as Y
-	GROUP BY y.numero_serie;*/
 }
 
