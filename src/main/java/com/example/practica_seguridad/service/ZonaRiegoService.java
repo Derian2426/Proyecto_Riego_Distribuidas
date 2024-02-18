@@ -131,17 +131,19 @@ public class ZonaRiegoService implements IZonaRiegoService {
                 if (agua.getCantidadLiquido() <= 0.9) {
                     establecerTiempoRiego = 0;
                 } else if (agua.getCantidadLiquido() > 0.9 && agua.getCantidadLiquido() <= 2) {
-                    establecerTiempoRiego = 60000;
+                    establecerTiempoRiego = 30000;
                 } else if (agua.getCantidadLiquido() > 2 && agua.getCantidadLiquido() <= 3) {
-                    establecerTiempoRiego = 90000;
+                    establecerTiempoRiego = 60000;
                 } else {
-                    establecerTiempoRiego = 120000;
+                    establecerTiempoRiego = 90000;
                 }
-                if ((zonaRiego.getUltimaHumedadSuelo() < zonaRiego.getRecomendacionHumedadSuelo())&&
-                        (zonaRiego.getUltimaTemaperatura()<=zonaRiego.getRecomendacionTemaperatura()||
-                                zonaRiego.getUltimaHumedadAmbiente()<=zonaRiego.getRecomendacionHumedadAmbiente())) {
+                //REALIZAR ALERTAS POR MUCHA HUMEDAD EN UN RENGO DE TIEMPO Y ESTABLECER POR LOS DEMAS PARAMETROS AMBIENTALES TAMBIEN
+                //REALIZAR LAS VERIFICACIONES POR TIPO DE SUELO TAMBIEN
+                if ((zonaRiego.getUltimaHumedadSuelo() < existingZonaRiego.getRecomendacionHumedadSuelo()) &&
+                        (zonaRiego.getUltimaTemaperatura() <= existingZonaRiego.getRecomendacionTemaperatura() &&
+                                zonaRiego.getUltimaHumedadAmbiente() <= existingZonaRiego.getRecomendacionHumedadAmbiente())) {
                     return establecerTiempoRiego;
-                }else{
+                } else {
                     return 0;
                 }
             }
@@ -165,17 +167,17 @@ public class ZonaRiegoService implements IZonaRiegoService {
                 if (nutrientes.getCantidadLiquido() <= 0.9) {
                     establecerTiempoRiego = 0;
                 } else if (nutrientes.getCantidadLiquido() > 0.9 && nutrientes.getCantidadLiquido() <= 2) {
-                    establecerTiempoRiego = 60000;
+                    establecerTiempoRiego = 30000;
                 } else if (nutrientes.getCantidadLiquido() > 2 && nutrientes.getCantidadLiquido() <= 3) {
-                    establecerTiempoRiego = 90000;
+                    establecerTiempoRiego = 60000;
                 } else {
-                    establecerTiempoRiego = 120000;
+                    establecerTiempoRiego = 90000;
                 }
-                if (zonaRiego.getUltimaFosforo() < zonaRiego.getRecomendacionFosforo() ||
-                        zonaRiego.getUltimaPotasio() < zonaRiego.getRecomendacionPotasio() ||
-                        zonaRiego.getUltimaNitrogeno() < zonaRiego.getRecomendacionNitrogeno()) {
+                if (zonaRiego.getUltimaFosforo() < existingZonaRiego.getRecomendacionFosforo() ||
+                        zonaRiego.getUltimaPotasio() < existingZonaRiego.getRecomendacionPotasio() ||
+                        zonaRiego.getUltimaNitrogeno() < existingZonaRiego.getRecomendacionNitrogeno()) {
                     return establecerTiempoRiego;
-                }else{
+                } else {
                     return 0;
                 }
             }
@@ -184,6 +186,7 @@ public class ZonaRiegoService implements IZonaRiegoService {
             return 0;
         }
     }
+
     @Transactional
     void actualizarZonaRiegoConsumo(ZonaRiego zonaRiego) {
         try {
