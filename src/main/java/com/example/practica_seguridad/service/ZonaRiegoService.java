@@ -138,7 +138,7 @@ public class ZonaRiegoService implements IZonaRiegoService {
                     establecerTiempoRiego = 120000;
                 }
                 if ((zonaRiego.getUltimaHumedadSuelo() < zonaRiego.getRecomendacionHumedadSuelo())&&
-                        (zonaRiego.getUltimaTemaperatura()<=zonaRiego.getRecomendacionTemaperatura()&&
+                        (zonaRiego.getUltimaTemaperatura()<=zonaRiego.getRecomendacionTemaperatura()||
                                 zonaRiego.getUltimaHumedadAmbiente()<=zonaRiego.getRecomendacionHumedadAmbiente())) {
                     return establecerTiempoRiego;
                 }else{
