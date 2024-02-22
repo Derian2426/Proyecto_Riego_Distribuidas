@@ -1,6 +1,8 @@
 package com.example.practica_seguridad.controller;
 
+import com.example.practica_seguridad.model.DetalleSensor;
 import com.example.practica_seguridad.model.Sensor;
+import com.example.practica_seguridad.model.ZonaRiego;
 import com.example.practica_seguridad.service.SensorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,6 +88,17 @@ public class SensorController {
                 return new ResponseEntity<>(sensorService.findByNombre(sensorRequest.getNombre()), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(sensorService.findAll(), HttpStatus.OK);
+        }
+    }
+    @PostMapping("/busquedazonariego")
+    public ResponseEntity<List<DetalleSensor>> busquedaSensorZonaRiego(@RequestBody ZonaRiego zonaRiego) {
+        try {
+            if (zonaRiego == null)
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(sensorService.findByZonaRiego(zonaRiego), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         }
     }
 

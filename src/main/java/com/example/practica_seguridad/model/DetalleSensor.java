@@ -1,5 +1,6 @@
 package com.example.practica_seguridad.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ public class DetalleSensor {
     @JoinColumn(name = "idSensor")
     private Sensor sensor;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "idZona")
     private ZonaRiego zona;

@@ -1,7 +1,10 @@
 package com.example.practica_seguridad.service;
 
+import com.example.practica_seguridad.model.DetalleSensor;
 import com.example.practica_seguridad.model.Sensor;
 import com.example.practica_seguridad.interfaces.ISensorService;
+import com.example.practica_seguridad.model.ZonaRiego;
+import com.example.practica_seguridad.repository.DetalleSensorRepository;
 import com.example.practica_seguridad.repository.SensorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,8 @@ import java.util.Optional;
 public class SensorService implements ISensorService {
     @Autowired
     private SensorRepository sensorRepository;
+    @Autowired
+    private DetalleSensorRepository detalleSensorRepository;
 
     @Override
     @Transactional
@@ -78,6 +83,15 @@ public class SensorService implements ISensorService {
     public List<Sensor> findByNombre(String nombre) {
         try {
             return sensorRepository.findByNombreContainingIgnoreCase(nombre);
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional
+    public List<DetalleSensor> findByZonaRiego(ZonaRiego zonaRiego) {
+        try {
+            return detalleSensorRepository.findByZona(zonaRiego);
         } catch (Exception e) {
             return new ArrayList<>();
         }
