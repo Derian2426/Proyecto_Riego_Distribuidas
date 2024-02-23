@@ -25,7 +25,8 @@ public class SensorService implements ISensorService {
     @Transactional
     public Sensor create(Sensor sensor) {
         try {
-            if (sensorRepository.findByNombreContainingIgnoreCase(sensor.getNombre()) != null) {
+            List<Sensor> sensorBusqueda=sensorRepository.findByNombreContainingIgnoreCase(sensor.getNombre());
+            if (!sensorBusqueda.isEmpty()) {
                 return new Sensor(-1L, "", "");
             }
             return sensorRepository.save(sensor);
