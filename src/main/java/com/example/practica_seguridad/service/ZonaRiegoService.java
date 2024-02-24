@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ZonaRiegoService implements IZonaRiegoService {
@@ -235,6 +232,19 @@ public class ZonaRiegoService implements IZonaRiegoService {
                     monitoreoTemperaturaAnterior.getHumedad() != monitoreoTemperatura.getHumedad()) {
                 monitoreoTemperaturaRepository.save(monitoreoTemperatura);
             }
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Transactional
+    public boolean monitoreoConexion(ZonaRiego zonaRiego) {
+        try {
+            MonitoreoSuelo monitoreoSueloAnterior = monitoreoSueloRepository.findTopByZonaRiegoOrderByIdSueloDesc(zonaRiego);
+            Date tiempoConexion = monitoreoSueloRepository.getCurrentDatabaseDateTimeMinusFiveHours();
+            long diferenciaMilisegundos = tiempoConexion.getTime() - monitoreoSueloAnterior.getFechaMedicion().getTime();
+            long minutos = diferenciaMilisegundos / (60 * 1000) % 60;
+            return minutos <= 15;
         } catch (Exception e) {
             throw new RuntimeException();
         }

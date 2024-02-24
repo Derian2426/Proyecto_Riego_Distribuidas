@@ -55,6 +55,7 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/registrozona")
     public ResponseEntity<ZonaRiego> createZonaRiego(@RequestBody ZonaRiego zonaRiegoRequest) {
         try {
@@ -106,6 +107,7 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/monitoreonutrientesriego")
     public ResponseEntity<Integer> decicionRiegoNutrientes(@RequestBody ZonaRiego zonaRiegoRequest) {
         try {
@@ -129,6 +131,7 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(0, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/registrarConsumo")
     public ResponseEntity<Integer> registrarConsumo(@RequestBody ZonaRiego zonaRiegoRequest) {
         try {
@@ -208,6 +211,7 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(new ZonaRiego(-1L, "Ocurrió un error inesperado."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("idzona/{direccionMAC}")
     public ResponseEntity<Integer> buscarDireccionMacId(@PathVariable("direccionMAC") String direccionMAC) {
         try {
@@ -232,6 +236,15 @@ public class ZonaRiegoController {
             return new ResponseEntity<>(zonaRiegoService.verificarRiegoAgua(direccionMAC), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/actvidadzona")
+    public ResponseEntity<Boolean> zonaActividad(@RequestBody ZonaRiego zonaRequest) {
+        try {
+            return new ResponseEntity<>(zonaRiegoService.monitoreoConexion(zonaRequest), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.OK);
         }
     }
 }
