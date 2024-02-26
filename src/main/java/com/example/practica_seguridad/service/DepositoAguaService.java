@@ -85,6 +85,14 @@ public class DepositoAguaService implements IDepositoAgua {
             return new ArrayList<>();
         }
     }
+    @Transactional
+    public List<DepositoAgua> findByZonaRiego(ZonaRiego zonaRiego) {
+        try {
+            return depositoAguaService.findByZonaRiego(zonaRiego);
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
+    }
 
     @Transactional
     public DepositoAgua findByZonaRiego(ZonaRiego zonaRiego, String liquido) {

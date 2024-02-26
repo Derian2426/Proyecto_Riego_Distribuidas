@@ -1,9 +1,6 @@
 package com.example.practica_seguridad.controller;
 
-import com.example.practica_seguridad.exeptions.ModelNotFoundException;
 import com.example.practica_seguridad.model.DepositoAgua;
-import com.example.practica_seguridad.model.MonitoreoTemperatura;
-import com.example.practica_seguridad.model.TipoCultivo;
 import com.example.practica_seguridad.model.ZonaRiego;
 import com.example.practica_seguridad.service.DepositoAguaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +83,17 @@ public class DepositoAguaController {
                 return new ResponseEntity<>(depositoAguaService.findByDescripcion(depositoAguaRequest.getDescripcion()), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(depositoAguaService.findAll(), HttpStatus.OK);
+        }
+    }
+    @PostMapping("/busquedazona")
+    public ResponseEntity<List<DepositoAgua>> busquedaDepositoZona(@RequestBody ZonaRiego zonaRiegoRequest) {
+        try {
+            if (zonaRiegoRequest == null)
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(depositoAguaService.findByZonaRiego(zonaRiegoRequest), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         }
     }
 
