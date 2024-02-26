@@ -25,6 +25,8 @@ public class ZonaRiegoService implements IZonaRiegoService {
     private DepositoAguaService depositoAguaService;
     @Autowired
     private InformeConsumoService informeConsumoService;
+    @Autowired
+    private CosechaService cosechaService;
 
     @Override
     @Transactional
@@ -70,6 +72,35 @@ public class ZonaRiegoService implements IZonaRiegoService {
             zonaRiego.setEstado(true);
             zonaRiegoRegistro = zonaRiegoRepository.save(zonaRiego);
             return zonaRiegoRegistro;
+        } catch (Exception e) {
+            return new ZonaRiego(-1L, e.getMessage());
+        }
+    }
+
+    @Transactional
+    public ZonaRiego createZonaRiegoCosecha(Cosecha cosecha) {
+        try {
+            if (cosecha == null)
+                return new ZonaRiego();
+            if (cosecha.getZonaRiego() == null)
+                return new ZonaRiego();
+            if (cosecha.getCultivo() == null)
+                return new ZonaRiego();
+            cosecha.getZonaRiego().setRecomendacionFosforo((float) cosecha.getCultivo().getNivelFosforo());
+            cosecha.getZonaRiego().setRecomendacionPotasio((float) cosecha.getCultivo().getNivelPotasio());
+            cosecha.getZonaRiego().setRecomendacionNitrogeno((float) cosecha.getCultivo().getNivelNitrogeno());
+            cosecha.getZonaRiego().setRecomendacionTemaperatura((float) cosecha.getCultivo().getNivelTemperatura());
+            cosecha.getZonaRiego().setRecomendacionHumedadAmbiente((float) cosecha.getCultivo().getHumedadAmbiente());
+            cosecha.getZonaRiego().setRecomendacionHumedadSuelo((float) cosecha.getCultivo().getNivelHumedadSuelo());
+            ZonaRiego riegoRegistro = createZonaRiego(cosecha.getZonaRiego());
+            if (riegoRegistro.getIdZona() == -1)
+                return new ZonaRiego();
+            cosecha.setZonaRiego(riegoRegistro);
+            Cosecha cosechaResponse = cosechaService.create(cosecha);
+            if (cosechaResponse.getIdCosecha() == -1)
+                return new ZonaRiego();
+            else
+                return riegoRegistro;
         } catch (Exception e) {
             return new ZonaRiego(-1L, e.getMessage());
         }
