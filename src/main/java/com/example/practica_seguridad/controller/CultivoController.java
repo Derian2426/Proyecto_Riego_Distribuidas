@@ -66,7 +66,7 @@ public class CultivoController {
         }
     }
 
-    @GetMapping("/listaenfermedadcultivo")
+    @PostMapping("/listaenfermedadcultivo")
     public ResponseEntity<List<Enfermedad>> listaEnfermedad(@RequestBody Cultivo cultivo) {
         try {
             return new ResponseEntity<>(cultivoService.findListaEnfermedades(cultivo), HttpStatus.OK);
