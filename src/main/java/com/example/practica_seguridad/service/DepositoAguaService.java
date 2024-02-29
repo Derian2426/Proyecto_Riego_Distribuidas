@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DepositoAguaService implements IDepositoAgua {
@@ -85,14 +86,18 @@ public class DepositoAguaService implements IDepositoAgua {
             return new ArrayList<>();
         }
     }
+
     @Transactional
     public List<DepositoAgua> findByZonaRiego(ZonaRiego zonaRiego) {
         try {
-            return depositoAguaService.findByZonaRiego(zonaRiego);
+            return depositoAguaService.findByZonaRiego(zonaRiego).stream()
+                    .filter(DepositoAgua::getEstado)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             return new ArrayList<>();
         }
     }
+
 
     @Transactional
     public DepositoAgua findByZonaRiego(ZonaRiego zonaRiego, String liquido) {
@@ -168,6 +173,7 @@ public class DepositoAguaService implements IDepositoAgua {
             return false;
         }
     }
+
     @Transactional
     public Boolean estadoMedicion(int deposito) {
         try {
