@@ -259,9 +259,13 @@ public class ZonaRiegoService implements IZonaRiegoService {
             MonitoreoTemperatura monitoreoTemperatura = new MonitoreoTemperatura(-1L, monitoreoSueloRepository.getCurrentDatabaseDateTimeMinusFiveHours(),
                     zonaRiego.getUltimaTemaperatura(),
                     zonaRiego.getUltimaHumedadAmbiente(), zonaRiego);
-            if (monitoreoTemperaturaAnterior.getTemperatura() != monitoreoTemperatura.getTemperatura() ||
-                    monitoreoTemperaturaAnterior.getHumedad() != monitoreoTemperatura.getHumedad()) {
+            if (monitoreoTemperaturaAnterior == null) {
                 monitoreoTemperaturaRepository.save(monitoreoTemperatura);
+            } else {
+                if (monitoreoTemperaturaAnterior.getTemperatura() != monitoreoTemperatura.getTemperatura() ||
+                        monitoreoTemperaturaAnterior.getHumedad() != monitoreoTemperatura.getHumedad()) {
+                    monitoreoTemperaturaRepository.save(monitoreoTemperatura);
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException();
@@ -288,12 +292,18 @@ public class ZonaRiegoService implements IZonaRiegoService {
             MonitoreoSuelo monitoreoSuelo = new MonitoreoSuelo(-1L, monitoreoSueloRepository.getCurrentDatabaseDateTimeMinusFiveHours(), zonaRiego.getUltimaHumedadSuelo(),
                     zonaRiego.getUltimaNitrogeno(), zonaRiego.getUltimaFosforo(), zonaRiego.getUltimaPotasio(),
                     "mg/kg", zonaRiego);
-            if (monitoreoSueloAnterior.getHumedad() != monitoreoSuelo.getHumedad() ||
-                    monitoreoSueloAnterior.getFosforo() != monitoreoSuelo.getFosforo() ||
-                    monitoreoSueloAnterior.getNitrogeno() != monitoreoSuelo.getNitrogeno() ||
-                    monitoreoSueloAnterior.getPotasio() != monitoreoSuelo.getPotasio()) {
+            if (monitoreoSueloAnterior == null) {
                 monitoreoSueloRepository.save(monitoreoSuelo);
+            } else {
+                if (monitoreoSueloAnterior.getHumedad() != monitoreoSuelo.getHumedad() ||
+                        monitoreoSueloAnterior.getFosforo() != monitoreoSuelo.getFosforo() ||
+                        monitoreoSueloAnterior.getNitrogeno() != monitoreoSuelo.getNitrogeno() ||
+                        monitoreoSueloAnterior.getPotasio() != monitoreoSuelo.getPotasio()) {
+                    monitoreoSueloRepository.save(monitoreoSuelo);
+                }
             }
+
+
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -330,6 +340,12 @@ public class ZonaRiegoService implements IZonaRiegoService {
             return false;
         }
     }
+
+    private boolean verificaDetalle(List<DetalleSensor> sensors, DetalleSensor sensor) {
+        return sensors.stream()
+                .anyMatch(detalleSensor -> Objects.equals(detalleSensor.getSensor().getIdSensor(), sensor.getSensor().getIdSensor()));
+    }
+
 
     private boolean verificaDetalleSensor(List<DetalleSensor> sensors, DetalleSensor sensor) {
         try {
