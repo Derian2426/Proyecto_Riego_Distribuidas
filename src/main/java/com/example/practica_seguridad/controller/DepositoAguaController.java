@@ -96,6 +96,17 @@ public class DepositoAguaController {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         }
     }
+    @PostMapping("/busquedazonaTanque")
+    public ResponseEntity<List<DepositoAgua>> busquedaTanque(@RequestBody ZonaRiego zonaRiegoRequest) {
+        try {
+            if (zonaRiegoRequest == null)
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(depositoAguaService.findByZonaRiegoDeposito(zonaRiegoRequest), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
+    }
 
     @PostMapping("/depositoAgua")
     public ResponseEntity<DepositoAgua> listaDepositoAgua(@RequestBody ZonaRiego zonaRiego) {
