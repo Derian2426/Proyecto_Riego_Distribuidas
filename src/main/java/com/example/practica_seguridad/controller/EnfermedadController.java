@@ -88,4 +88,15 @@ public class EnfermedadController {
             return new ResponseEntity<>(enfermedadService.findAll(), HttpStatus.OK);
         }
     }
+    @PostMapping("/busquedaenfermedad")
+    public ResponseEntity<Enfermedad> busquedaEnfermedadZona(@RequestBody Enfermedad enfermedadRequest) {
+        try {
+            if (enfermedadRequest == null)
+                return new ResponseEntity<>(new Enfermedad(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(enfermedadService.findByNombreEnfermedad(enfermedadRequest.getNombreEnfermedad()), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new Enfermedad(), HttpStatus.OK);
+        }
+    }
 }

@@ -73,12 +73,22 @@ public class EnfermedadService implements IEnfermedad {
             throw new RuntimeException();
         }
     }
+
     @Transactional
     public List<Enfermedad> findByNombre(String nombre) {
         try {
             return enfermedadRepository.findByNombreEnfermedadContainingIgnoreCase(nombre);
         } catch (Exception e) {
             return new ArrayList<>();
+        }
+    }
+
+    @Transactional
+    public Enfermedad findByNombreEnfermedad(String nombre) {
+        try {
+            return enfermedadRepository.findByNombreEnfermedad(nombre);
+        } catch (Exception e) {
+            return new Enfermedad();
         }
     }
 }
