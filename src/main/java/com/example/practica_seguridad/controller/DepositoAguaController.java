@@ -1,6 +1,7 @@
 package com.example.practica_seguridad.controller;
 
 import com.example.practica_seguridad.model.DepositoAgua;
+import com.example.practica_seguridad.model.InformeConsumo;
 import com.example.practica_seguridad.model.ZonaRiego;
 import com.example.practica_seguridad.service.DepositoAguaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,6 +194,14 @@ public class DepositoAguaController {
             return new ResponseEntity<>(depositoAguaService.habilitarMedicionTanque(deposito), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(false, HttpStatus.CONFLICT);
+        }
+    }
+    @GetMapping("/reporteTanque/{idTanque}")
+    public ResponseEntity<List<InformeConsumo>> reporteTanque(@PathVariable("idTanque") int deposito) {
+        try {
+            return new ResponseEntity<>(depositoAguaService.cantidadConsumoTanque(deposito), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.CONFLICT);
         }
     }
 

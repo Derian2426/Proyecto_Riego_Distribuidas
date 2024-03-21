@@ -1,9 +1,11 @@
 package com.example.practica_seguridad.service;
 
 import com.example.practica_seguridad.model.DepositoAgua;
+import com.example.practica_seguridad.model.InformeConsumo;
 import com.example.practica_seguridad.model.ZonaRiego;
 import com.example.practica_seguridad.repository.DepositoAguaRepository;
 import com.example.practica_seguridad.interfaces.IDepositoAgua;
+import com.example.practica_seguridad.repository.InformeConsumoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,8 @@ import java.util.stream.Collectors;
 public class DepositoAguaService implements IDepositoAgua {
     @Autowired
     private DepositoAguaRepository depositoAguaService;
+    @Autowired
+    private InformeConsumoRepository informeConsumoRepository;
 
     @Override
     @Transactional
@@ -156,6 +160,15 @@ public class DepositoAguaService implements IDepositoAgua {
             return -1L;
         }
 
+    }
+    @Transactional
+    public List<InformeConsumo> cantidadConsumoTanque(int deposito) {
+        try {
+            DepositoAgua tanque = findById(deposito);
+            return informeConsumoRepository.findByDepositoAgua(tanque);
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 
     @Transactional
