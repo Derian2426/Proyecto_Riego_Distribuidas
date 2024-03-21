@@ -16,7 +16,8 @@ public class InformeConsumo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idConsumo")
     private Long idConsumo;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     @Column(name = "fechaCosumo", nullable = false)
     private Date fechaCosumo;
     @Column(name = "cantidadConsumo")
